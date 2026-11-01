@@ -102,6 +102,6 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] `/books/{isbn}/` pages render with `layouts/book/single.html`
 - [x] v1.0.5 live (1 Nov): `/archive/` → `/posts/`, `/photos/` → home
 - [x] Retag old posts: DeepSeek → news; Buffett, Acorn/ARM, boring tech → note (1 Nov)
-- [ ] Decide on the other retag suggestions (Orion, Heroku, AI glasses, ahastack → note; 5 long 2021 posts → essay); 13 posts are still in old "Books", 5 in "Articles"
+- [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
 - [ ] First `book` + `recommend` post so "Recommended" isn't empty
 - [ ] Rob to refine homepage copy himself (in plug-in settings)

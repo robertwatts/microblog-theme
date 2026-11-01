@@ -2,8 +2,8 @@
  * One-off retag of existing micro.blog posts via Micropub.
  *
  *   MB_TOKEN=xxx npx tsx scripts/retag.ts plan    # writes retag-plan.json with suggestions
- *   (edit retag-plan.json: set "add" per post, or leave it empty)
- *   MB_TOKEN=xxx npx tsx scripts/retag.ts apply   # adds those categories, then re-reads each post to verify
+ *   (edit retag-plan.json: set "add" and optionally "remove" per post, or leave them empty)
+ *   MB_TOKEN=xxx npx tsx scripts/retag.ts apply   # applies those changes, then re-reads each post to verify
  *
  * Get a token from micro.blog → Account → Edit Apps → App tokens.
  * Optional: MB_DESTINATION=https://yourname.micro.blog/ if the account has more than one blog.
@@ -33,6 +33,7 @@ type PlanRow = {
   existing: string[];
   why: string;      // why the suggestion was made
   add: Category[];  // what apply will add; edit freely, [] means leave alone
+  remove?: string[]; // categories apply will take off, e.g. old "Books"
 };
 
 const ENDPOINT = "https://micro.blog/micropub";
@@ -104,11 +105,12 @@ async function plan() {
 
 async function apply() {
   const rows: PlanRow[] = JSON.parse(await readFile(PLAN, "utf8"));
-  const todo = rows.filter((r) => r.add.length);
+  const todo = rows.filter((r) => r.add.length || r.remove?.length);
   for (const r of todo) {
     // micro.blog returns 200 for `add` but ignores it; `replace` works, so merge with the live categories first.
     const live = await micropub<MicropubEntry>({ q: "source", url: r.url });
-    const category = [...new Set([...(live.properties.category ?? []), ...r.add])];
+    const remove = r.remove ?? [];
+    const category = [...new Set([...(live.properties.category ?? []), ...r.add])].filter((c) => !remove.includes(c));
     const res = await fetch(ENDPOINT, {
       method: "POST",
       headers: { Authorization: `Bearer ${TOKEN}`, "Content-Type": "application/json" },
@@ -125,7 +127,7 @@ async function apply() {
     }
     const check = await micropub<MicropubEntry>({ q: "source", url: r.url });
     const now = check.properties.category ?? [];
-    const ok = r.add.every((c) => now.includes(c));
+    const ok = r.add.every((c) => now.includes(c)) && !remove.some((c) => now.includes(c));
     console.log(`${ok ? "✓" : "?"} ${r.url} → [${now.join(", ")}]`);
   }
   console.log(`Done. ${todo.length} posts updated. Run a full rebuild from micro.blog → Logs if pages look stale.`);
