@@ -1,5 +1,5 @@
 {
-  "version": "1.0.6",
+  "version": "1.0.7",
   "title": "robwatts.org theme",
   "description": "Sunflower homepage, Posts and Books for robwatts.org. Use with the Blank theme.",
   "includes": ["/css/rw.css"],

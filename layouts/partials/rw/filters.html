@@ -3,6 +3,8 @@
 <div class="filters" role="list">
   <a role="listitem" class="pill" href="{{ "/posts/" | relURL }}"{{ if eq $active "" }} aria-current="page"{{ end }}>All</a>
   {{- range slice (slice "note" "Notes") (slice "book" "Books") (slice "news" "News") (slice "essay" "Essays") }}
+  {{- if index site.Taxonomies.categories (index . 0) }}{{/* hide kinds with no posts yet */}}
   <a role="listitem" class="pill" href="{{ printf "/categories/%s/" (index . 0) | relURL }}"{{ if eq $active (index . 0) }} aria-current="page"{{ end }}>{{ index . 1 }}</a>
+  {{- end }}
   {{- end }}
 </div>

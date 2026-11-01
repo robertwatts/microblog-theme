@@ -24,7 +24,7 @@ const robwatts = {
   },
   posts: {
     kinds: ["note", "book", "news", "essay"],
-    feed: "/posts/ — one feed, filter pills link to /categories/{kind}/",
+    feed: "/posts/ — one feed, filter pills link to /categories/{kind}/, only for kinds with posts",
     triggers: ["sent someone a link", "finished a book", "explained it twice"],
     politics: "only through a tech/business lens",
   },
@@ -86,7 +86,7 @@ All lowercase; templates match names exactly.
 
 ## Testing
 
-Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set to), a site with `theme: ["<this repo>", "tiny", "theme-blank"]` (clone `github.com/MattSLangford/Tiny-Theme-for-Micro.blog` and `github.com/microdotblog/theme-blank`; without Tiny you won't see its templates winning), a few posts with `type: post` and categories, `content/books/<isbn>.md` with `type: book`, and JSON files in `data/bookshelves/`. Screenshot at 390px wide in light and dark mode.
+Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set to), a site with `theme: ["<this repo>", "tiny", "theme-blank"]` (clone `github.com/MattSLangford/Tiny-Theme-for-Micro.blog` and `github.com/microdotblog/theme-blank`; without Tiny you won't see its templates winning), a few posts with `type: post` and categories (not under `content/posts/`, or Hugo's section list takes over `/posts/`), `content/books/<isbn>.md` with `type: book`, and JSON files in `data/bookshelves/`. Screenshot at 390px wide in light and dark mode.
 
 ## Status (as of 1 Nov 2026)
 
