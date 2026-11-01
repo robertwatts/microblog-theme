@@ -72,6 +72,7 @@ All lowercase; templates match names exactly.
 
 - Plug-ins are installed via **Design → Edit Custom Themes → New Plug-in** with a GitHub clone URL. There is no "install from GitHub" under Plug-ins.
 - Deploying = bump `version` in `plugin.json`, push, then Rob taps **Update** on the plug-in.
+- A plug-in is not a custom theme. Design correctly shows "Custom theme: None" while this plug-in renders the site; keep it None. Two leftover custom themes ("robwatts.org", "robwatts.org custom theme") sit in that dropdown unused.
 - Posts have `.Type == "post"`. Pages are separate. Categories are taxonomy `categories`; a term page only exists once a post is in it.
 - Shelf data: `.Site.Data.bookshelves.<shelf name lowercased, no spaces>` with `title`, `author`, `isbn`, `cover_url`. Rob has "Currently reading" plus year shelves like "2024 highlights"; the theme treats every shelf except `currentlyreading` and `wanttoread` as read.
 - Book detail pages: Bookshelves → Settings → "Link books to detail pages on your blog". Template is `layouts/book/single.html` with params `isbn`, `title`, `author`, `cover_url`, `background_color`, `description`, `shelves[]{name,type}`, `finished_at`. Pages only exist for books linked from posts, so links use `rw/book-url.html` to fall back to micro.blog's page.
@@ -93,7 +94,7 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] Categories created: note, book, news, essay, recommend
 - [x] v1.0.2 pushed
 - [x] v1.0.3 live (1 Nov): nav links `/reading/`, `bookgoals.css` gone, "Also read" filled
-- [ ] **v1.0.4 to Update**: posts were all rendering with Tiny's template; also fixes every stylesheet being linked twice
+- [x] v1.0.4 live (1 Nov): posts use `post/single.html`, `rw.css` linked once
 - [x] Books page URL changed to `/reading/`
 - [ ] `/reading/` bookshelf option still on (micro.blog's shelf HTML appended under "Also read"); set it to None
 - [x] "Link books to detail pages" on, "Book reading goals" uninstalled
