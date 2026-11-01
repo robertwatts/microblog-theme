@@ -1,6 +1,6 @@
 # robwatts.org — context for Claude Code
 
-Rob's personal site, robwatts.org, hosted on micro.blog. This repo is a micro.blog **plug-in** that renders the whole site on top of micro.blog's **Blank** theme. Rob writes TypeScript, likes ideas expressed as clear data structures, and prefers short, direct answers.
+Rob's personal site, robwatts.org, hosted on micro.blog. This repo is a micro.blog **plug-in** that renders the whole site on top of the blog's base theme, **Tiny Theme** (micro.blog layers Blank underneath). Rob writes TypeScript, likes ideas expressed as clear data structures, and prefers short, direct answers.
 
 ## What the site is for
 
@@ -58,7 +58,9 @@ All lowercase; templates match names exactly.
 | Path | Renders |
 | --- | --- |
 | `layouts/index.html` | Homepage. Copy comes from plug-in settings fields (`params.rw_*`), with defaults inline |
-| `layouts/_default/single.html` | Posts, plus pages; `/posts/` and `/reading/` get special bands |
+| `layouts/post/single.html` | Posts (must live here: Tiny's `post/single.html` beats any `_default/single.html`) |
+| `layouts/_default/single.html` | Pages; `/posts/` and `/reading/` get special bands |
+| `layouts/shortcodes/bookgoals.html` | Empty stub so old `{{< bookgoals YEAR >}}` posts still build |
 | `layouts/_default/list.html` | Category pages |
 | `layouts/book/single.html` | `/books/{isbn}/` detail pages, overriding micro.blog's |
 | `layouts/shortcodes/rw-posts.html`, `rw-books.html` | Content of the `/posts/` and `/reading/` pages |
@@ -76,12 +78,13 @@ All lowercase; templates match names exactly.
 - Enabling detail pages auto-installs the "Book reading goals" plug-in, which has its own `book/single.html`; uninstall it.
 - Uninstalling a plug-in removes its shortcodes, and one post still using one fails every build (red "Theme error" on the Design page; the live site silently stays on the last good build). "Year in books for 2023" uses `{{< bookgoals 2023 >}}`, hence the empty `layouts/shortcodes/bookgoals.html`.
 - The blog's Hugo version is set to 0.91 on the Design page.
+- The base theme (Tiny Theme) is a theme plug-in with no Uninstall. A blog always has exactly one; installing another theme from Plug-ins replaces it, and Blank is no longer selectable. Any type- or output-specific template in the base theme beats our `_default/*`, so the plug-in must override those too. Still on Tiny: `/archive/` and `/photos/` (`list.archivehtml.html`, `list.photoshtml.html`).
 - Micropub: `https://micro.blog/micropub`, Bearer app token. `q=source` lists posts; `q=category` lists categories; categories can be created via `mp-channel=categories`. Updates: `action: update` with `add: {category}` returns 200 but does nothing; `replace: {category: [...]}` works and leaves other properties alone, so send the full merged list. Paging with `limit`/`offset` on `q=source` is not confirmed.
 - No API for blog settings; those are manual.
 
 ## Testing
 
-Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set to), a site with `theme: ["<this repo>", "theme-blank"]` (clone `github.com/microdotblog/theme-blank`), a few posts with `type: post` and categories, `content/books/<isbn>.md` with `type: book`, and JSON files in `data/bookshelves/`. Screenshot at 390px wide in light and dark mode.
+Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set to), a site with `theme: ["<this repo>", "tiny", "theme-blank"]` (clone `github.com/MattSLangford/Tiny-Theme-for-Micro.blog` and `github.com/microdotblog/theme-blank`; without Tiny you won't see its templates winning), a few posts with `type: post` and categories, `content/books/<isbn>.md` with `type: book`, and JSON files in `data/bookshelves/`. Screenshot at 390px wide in light and dark mode.
 
 ## Status (as of 1 Nov 2026)
 
@@ -89,12 +92,13 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] `/posts/` live, 55 posts
 - [x] Categories created: note, book, news, essay, recommend
 - [x] v1.0.2 pushed
-- [ ] **v1.0.3 to Update** (adds the `bookgoals` stub; builds have failed since "Book reading goals" was uninstalled, so 1.0.2 never went live either)
+- [x] v1.0.3 live (1 Nov): nav links `/reading/`, `bookgoals.css` gone, "Also read" filled
+- [ ] **v1.0.4 to Update**: posts were all rendering with Tiny's template; also fixes every stylesheet being linked twice
 - [x] Books page URL changed to `/reading/`
-- [x] "Link books to detail pages" on (e.g. `/books/9781783783441/` exists)
-- [x] "Book reading goals" uninstalled
-- [ ] After the first good build, recheck: nav links `/reading/`, no micro.blog shelf HTML under "Also read" (else set the page's bookshelf option to None), no `bookgoals.css` in head
-- [ ] Check a `/books/{isbn}/` page renders with `layouts/book/single.html`
+- [ ] `/reading/` bookshelf option still on (micro.blog's shelf HTML appended under "Also read"); set it to None
+- [x] "Link books to detail pages" on, "Book reading goals" uninstalled
+- [x] `/books/{isbn}/` pages render with `layouts/book/single.html`
+- [ ] Decide what `/archive/` and `/photos/` should be (Tiny-styled today; redirect to `/posts/`, or hide)
 - [x] Retag old posts: DeepSeek → news; Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [ ] Decide on the other retag suggestions (Orion, Heroku, AI glasses, ahastack → note; 5 long 2021 posts → essay); 13 posts are still in old "Books", 5 in "Articles"
 - [ ] First `book` + `recommend` post so "Recommended" isn't empty
