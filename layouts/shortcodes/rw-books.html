@@ -23,20 +23,23 @@
 {{- end -}}
 {{- $reading := site.Data.bookshelves.currentlyreading | default slice -}}
 
+{{- $recommended := slice -}}
+{{- range $finished -}}
+  {{- if eq (index $verdicts (string .isbn)) "recommend" }}{{ $recommended = $recommended | append . }}{{ end -}}
+{{- end -}}
+
+{{- with $recommended }}{{/* hidden until the first recommend post */}}
 <section class="stack-s" aria-labelledby="recommended">
   <h2 class="section-title" id="recommended">Recommended</h2>
-  {{- $any := false }}
-  {{- range $finished }}
+  {{- range . }}
     {{- $isbn := string .isbn }}
-    {{- if eq (index $verdicts $isbn) "recommend" }}{{ $any = true }}
   <a class="book-row book-row--big" href="{{ partial "rw/book-url.html" $isbn }}">
     {{ with .cover_url }}<img class="cover" src="{{ . }}" alt="" width="72" height="108" loading="lazy">{{ end }}
     <span><span class="book-title">{{ .title }}</span><span class="book-author">{{ .author }}</span><span class="book-why">{{ index $why $isbn }}</span></span>
   </a>
-    {{- end }}
   {{- end }}
-  {{- if not $any }}<p class="muted">No recommendations yet. The first one is coming.</p>{{ end }}
 </section>
+{{- end }}
 
 {{- with $reading }}
 <section class="stack-s" aria-labelledby="reading">
@@ -58,7 +61,7 @@
     {{- range $finished }}
       {{- $isbn := string .isbn }}{{ $v := index $verdicts $isbn }}
       {{- if ne $v "recommend" }}
-    <li><a href="{{ partial "rw/book-url.html" $isbn }}"><span class="book-title">{{ .title }}</span> <span class="book-author">{{ .author }}</span></a><span class="log-verdict">{{ $v | default "no note" }}</span></li>
+    <li><a href="{{ partial "rw/book-url.html" $isbn }}"><span class="book-title">{{ .title }}</span> <span class="book-author">{{ .author }}</span></a>{{ with $v }}<span class="log-verdict">{{ . }}</span>{{ end }}</li>
       {{- end }}
     {{- end }}
   </ul>

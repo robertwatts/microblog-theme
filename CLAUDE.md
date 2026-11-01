@@ -30,7 +30,7 @@ const robwatts = {
   },
   books: {
     page: "/reading/ (micro.blog reserves /books/ for detail pages)",
-    order: ["recommended", "reading now", "also read"],
+    order: ["recommended", "reading now", "also read"], // empty sections and missing notes are hidden
     joinKey: "isbn",
   },
   distribution: { canonical: "robwatts.org", crossPost: ["bluesky", "fediverse"], substack: false },
@@ -64,6 +64,7 @@ All lowercase; templates match names exactly.
 | `layouts/index.archivehtml.html`, `index.photoshtml.html` | `/archive/` → `/posts/`, `/photos/` → home, via `rw/redirect.html` (meta refresh, canonical, noindex) |
 | `layouts/_default/list.html` | Category pages |
 | `layouts/book/single.html` | `/books/{isbn}/` detail pages, overriding micro.blog's |
+| `layouts/404.html` | Not-found page with the band (untested whether micro.blog serves it) |
 | `layouts/shortcodes/rw-posts.html`, `rw-books.html` | Content of the `/posts/` and `/reading/` pages |
 | `layouts/partials/rw/*` | head, nav, band, filters, footer, item, plus helpers that `return` values (kind, verdict, confidence, isbn, book-data, book-url, posts-about) |
 | `plugin.json` | Version, CSS include, settings fields |
@@ -76,7 +77,8 @@ All lowercase; templates match names exactly.
 - A plug-in is not a custom theme. Design correctly shows "Custom theme: None" while this plug-in renders the site; keep it None. Two leftover custom themes ("robwatts.org", "robwatts.org custom theme") sit in that dropdown unused.
 - Posts have `.Type == "post"`. Pages are separate. Categories are taxonomy `categories`; a term page only exists once a post is in it.
 - Shelf data: `.Site.Data.bookshelves.<shelf name lowercased, no spaces>` with `title`, `author`, `isbn`, `cover_url`. Rob has "Currently reading" plus year shelves like "2024 highlights"; the theme treats every shelf except `currentlyreading` and `wanttoread` as read.
-- Book detail pages: Bookshelves → Settings → "Link books to detail pages on your blog". Template is `layouts/book/single.html` with params `isbn`, `title`, `author`, `cover_url`, `background_color`, `description`, `shelves[]{name,type}`, `finished_at`. Pages only exist for books linked from posts, so links use `rw/book-url.html` to fall back to micro.blog's page.
+- Book detail pages: Bookshelves → Settings → "Link books to detail pages on your blog". Template is `layouts/book/single.html` with params `isbn`, `title`, `author`, `cover_url`, `background_color`, `description`, `shelves[]{name,type}`, `finished_at`. Pages only exist for books linked from posts, so links use `rw/book-url.html` to fall back to micro.blog's page. Book posts also carry micro.blog's own `img.microblog_book` cover in the body; `rw.css` hides it wherever our book row already shows one.
+- Design → Edit CSS (`custom.css`) loads before `rw.css` on every page. Rob's still has Tiny leftovers (`body { max-width: 55em }` squeezed desktop to 935px); `rw.css` sets `body { max-width: none }` as a guard, but clearing Edit CSS is the real fix.
 - Enabling detail pages auto-installs the "Book reading goals" plug-in, which has its own `book/single.html`; uninstall it.
 - Uninstalling a plug-in removes its shortcodes, and one post still using one fails every build (red "Theme error" on the Design page; the live site silently stays on the last good build). "Year in books for 2023" uses `{{< bookgoals 2023 >}}`, hence the empty `layouts/shortcodes/bookgoals.html`.
 - The blog's Hugo version is set to 0.91 on the Design page.
@@ -102,6 +104,8 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] `/books/{isbn}/` pages render with `layouts/book/single.html`
 - [x] v1.0.5 live (1 Nov): `/archive/` → `/posts/`, `/photos/` → home
 - [x] v1.0.7 live (1 Nov): home's recent 3 include news; filter pills hide empty kinds
+- [ ] v1.0.8 pushed (1 Nov), to Update and check: tightened `rw.css` (9-step type scale, 44px tap targets, full-width desktop, one cover per book post, dark focus ring), Recommended and "no note" hidden when empty, `404.html`
+- [ ] Rob: clear Design → Edit CSS; fill Now, Bluesky and LinkedIn settings; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
 - [ ] First `book` + `recommend` post so "Recommended" isn't empty

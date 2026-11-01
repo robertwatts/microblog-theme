@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="{{ site.LanguageCode | default "en" }}">
+{{ partial "rw/head.html" . }}
+<body>
+{{ partial "rw/band.html" (dict "page" . "title" "Not found" "lede" "That page has moved, or never existed.") }}
+<main class="wrap stack">
+  <p>Try <a href="{{ "/posts/" | relURL }}">all posts</a>, <a href="{{ "/reading/" | relURL }}">books</a>, or go back <a href="{{ "/" | relURL }}">home</a>.</p>
+</main>
+{{ partial "rw/footer.html" . }}
+</body>
+</html>
