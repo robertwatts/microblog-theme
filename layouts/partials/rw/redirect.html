@@ -1,0 +1,12 @@
+{{- /* context: a site path. A page that sends visitors and search engines there; micro.blog has no server-side redirects */ -}}
+<!doctype html>
+<html lang="{{ site.LanguageCode | default "en" }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="{{ . | absURL }}">
+  <meta http-equiv="refresh" content="0; url={{ . | relURL }}">
+  <title>{{ site.Title }}</title>
+</head>
+<body><a href="{{ . | relURL }}">{{ . | absURL }}</a></body>
+</html>
