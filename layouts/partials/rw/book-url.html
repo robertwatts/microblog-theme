@@ -1,0 +1,7 @@
+{{- /* context: ISBN. Local /books/{isbn}/ page if micro.blog generated one, else the micro.blog book page */ -}}
+{{- $isbn := string . -}}
+{{- $url := printf "https://micro.blog/books/%s" $isbn -}}
+{{- range where site.Pages "Type" "book" -}}
+  {{- if eq (string (.Params.isbn | default (path.Base .RelPermalink))) $isbn -}}{{- $url = .RelPermalink -}}{{- end -}}
+{{- end -}}
+{{- return $url -}}

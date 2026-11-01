@@ -18,7 +18,7 @@
       {{- if eq $kind "book" }}
         {{- $isbn := partial "rw/isbn.html" . }}
         {{- with partial "rw/book-data.html" $isbn }}
-      <a class="book-row" href="{{ printf "/books/%s/" $isbn | relURL }}">
+      <a class="book-row" href="{{ partial "rw/book-url.html" $isbn }}">
         {{ with .cover_url }}<img class="cover" src="{{ . }}" alt="" width="64" height="96">{{ end }}
         <span><span class="book-title">{{ .title }}</span><span class="book-author">{{ .author }}</span></span>
       </a>
@@ -33,7 +33,7 @@
 {{- else if eq .RelPermalink "/posts/" }}
   {{ partial "rw/band.html" (dict "page" . "title" "Posts" "filters" "") }}
   <main class="wrap stack">{{ .Content }}</main>
-{{- else if eq .RelPermalink "/books/" }}
+{{- else if eq .RelPermalink "/reading/" }}
   {{ partial "rw/band.html" (dict "page" . "title" "Books" "lede" "Ones I’d press on you, and what I’m reading now.") }}
   <main class="wrap stack">{{ .Content }}</main>
 {{- else }}
