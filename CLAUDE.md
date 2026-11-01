@@ -100,7 +100,7 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] `/reading/` bookshelf option set to None
 - [x] "Link books to detail pages" on, "Book reading goals" uninstalled
 - [x] `/books/{isbn}/` pages render with `layouts/book/single.html`
-- [ ] **v1.0.5 to Update**: `/archive/` → `/posts/`, `/photos/` → home
+- [x] v1.0.5 live (1 Nov): `/archive/` → `/posts/`, `/photos/` → home
 - [x] Retag old posts: DeepSeek → news; Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [ ] Decide on the other retag suggestions (Orion, Heroku, AI glasses, ahastack → note; 5 long 2021 posts → essay); 13 posts are still in old "Books", 5 in "Articles"
 - [ ] First `book` + `recommend` post so "Recommended" isn't empty
