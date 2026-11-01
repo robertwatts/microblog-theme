@@ -106,13 +106,16 @@ async function apply() {
   const rows: PlanRow[] = JSON.parse(await readFile(PLAN, "utf8"));
   const todo = rows.filter((r) => r.add.length);
   for (const r of todo) {
+    // micro.blog returns 200 for `add` but ignores it; `replace` works, so merge with the live categories first.
+    const live = await micropub<MicropubEntry>({ q: "source", url: r.url });
+    const category = [...new Set([...(live.properties.category ?? []), ...r.add])];
     const res = await fetch(ENDPOINT, {
       method: "POST",
       headers: { Authorization: `Bearer ${TOKEN}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         action: "update",
         url: r.url,
-        add: { category: r.add },
+        replace: { category },
         ...(DEST ? { "mp-destination": DEST } : {}),
       }),
     });
