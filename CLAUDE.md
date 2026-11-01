@@ -20,7 +20,7 @@ const robwatts = {
     stance: "advise first, invest occasionally",
     cta: "email only",
     now: "one changeable human line",
-    recent: "latest 3 posts, excluding news",
+    recent: "latest 3 posts",
   },
   posts: {
     kinds: ["note", "book", "news", "essay"],

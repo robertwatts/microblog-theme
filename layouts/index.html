@@ -2,8 +2,7 @@
 {{- $email := $p.rw_email | default "rw@robwatts.org" -}}
 {{- $help := slice ($p.rw_help_1 | default "Scale e-commerce tech, and know when not to build it") ($p.rw_help_2 | default "Make personalised and print-on-demand products work") ($p.rw_help_3 | default "Build small tech teams that survive growth") -}}
 {{- $posts := (where site.RegularPages "Type" "post").ByDate.Reverse -}}
-{{- $news := where $posts "Params.categories" "intersect" (slice "news") -}}
-{{- $recent := first 3 (complement $news $posts) -}}
+{{- $recent := first 3 $posts -}}
 <!doctype html>
 <html lang="{{ site.LanguageCode | default "en" }}">
 {{ partial "rw/head.html" . }}
