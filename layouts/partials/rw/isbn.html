@@ -1,0 +1,6 @@
+{{- /* First ISBN linked in a post, from micro.blog/books/{isbn} or /books/{isbn} links */ -}}
+{{- $isbn := "" -}}
+{{- with index (findRE `books/[0-9Xx]{10,13}` .RawContent 1) 0 -}}
+  {{- $isbn = strings.TrimPrefix "books/" . -}}
+{{- end -}}
+{{- return $isbn -}}

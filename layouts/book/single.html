@@ -1,0 +1,52 @@
+{{- $isbn := string (.Params.isbn | default (path.Base .RelPermalink)) -}}
+{{- $posts := partial "rw/posts-about.html" $isbn -}}
+{{- $verdict := "" -}}
+{{- range $posts }}{{ if and (eq $verdict "") (eq (partial "rw/kind.html" .) "book") }}{{ $verdict = partial "rw/verdict.html" . }}{{ end }}{{ end -}}
+{{- $shelf := "" -}}
+{{- range .Params.shelves }}{{ $shelf = .name }}{{ end -}}
+<!doctype html>
+<html lang="{{ site.LanguageCode | default "en" }}">
+{{ partial "rw/head.html" . }}
+<body>
+<header class="band">
+  <div class="wrap band-inner">
+    {{ partial "rw/nav.html" . }}
+    <div class="book-hero">
+      {{- with .Params.cover_url }}<img class="cover cover--hero" src="{{ . }}" alt="Cover of {{ $.Title }}" width="110" height="165">{{ end }}
+      <div class="stack-xs">
+        <h1 class="band-title band-title--book">{{ .Title }}</h1>
+        {{- with .Params.author }}<p class="book-hero-author">{{ . }}</p>{{ end }}
+        <p class="chips">
+          {{- with $verdict }}<span class="chip chip--band">{{ . }}</span>{{ end }}
+          {{- with $shelf }}<span class="chip chip--band-outline">{{ . }}</span>{{ end }}
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
+<main class="wrap stack">
+  {{- with $posts }}
+  <section aria-labelledby="mine">
+    <h2 class="section-title" id="mine">My posts about it</h2>
+    <ol class="timeline">
+      {{- range . }}
+        {{- $k := partial "rw/kind.html" . }}
+      <li class="{{ if eq $k "book" }}is-verdict{{ end }}">
+        <a class="date" href="{{ .Permalink }}">{{ if eq $k "book" }}verdict{{ else }}post{{ end }}, {{ .Date.Format "2 Jan 2006" }}</a>
+        <div class="prose">{{ .Content }}</div>
+      </li>
+      {{- end }}
+    </ol>
+  </section>
+  {{- end }}
+  {{- with .Params.description }}
+  <details class="about-book">
+    <summary>About the book</summary>
+    <div class="prose">{{ . | safeHTML }}</div>
+  </details>
+  {{- end }}
+  <p><a class="more" href="{{ "/books/" | relURL }}">All books</a></p>
+</main>
+{{ partial "rw/footer.html" . }}
+</body>
+</html>

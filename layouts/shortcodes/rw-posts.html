@@ -1,0 +1,4 @@
+{{- /* Put {{< rw-posts >}} on a page at /posts/ */ -}}
+<div class="stack-s h-feed">
+  {{- range (where site.RegularPages "Type" "post").ByDate.Reverse }}{{ partial "rw/item.html" . }}{{ end }}
+</div>

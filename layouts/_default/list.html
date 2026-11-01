@@ -1,0 +1,19 @@
+{{- /* Category pages (/categories/note/ etc.) and any other lists */ -}}
+{{- $kinds := slice "note" "book" "news" "essay" -}}
+{{- $term := lower .Title -}}
+<!doctype html>
+<html lang="{{ site.LanguageCode | default "en" }}">
+{{ partial "rw/head.html" . }}
+<body>
+{{- if and (eq .Kind "term") (in $kinds $term) }}
+  {{ partial "rw/band.html" (dict "page" . "title" "Posts" "filters" $term) }}
+{{- else }}
+  {{ partial "rw/band.html" (dict "page" . "title" .Title) }}
+{{- end }}
+<main class="wrap stack-s h-feed">
+  {{- range .Pages.ByDate.Reverse }}{{ partial "rw/item.html" . }}{{ end }}
+  {{- with .OutputFormats.Get "rss" }}<p><a class="more" href="{{ .Permalink }}">RSS for this list</a></p>{{ end }}
+</main>
+{{ partial "rw/footer.html" . }}
+</body>
+</html>

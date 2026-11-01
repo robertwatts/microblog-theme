@@ -1,0 +1,9 @@
+{{- /* context: an ISBN string. Returns the bookshelf entry (title, author, isbn, cover_url) or nil */ -}}
+{{- $isbn := . -}}
+{{- $found := false -}}
+{{- range $shelf, $books := site.Data.bookshelves -}}
+  {{- range $books -}}
+    {{- if and (not $found) (eq (string .isbn) $isbn) -}}{{- $found = . -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $found -}}

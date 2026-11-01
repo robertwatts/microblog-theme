@@ -1,0 +1,22 @@
+{{- $kind := partial "rw/kind.html" . -}}
+{{- $verdict := partial "rw/verdict.html" . -}}
+{{- $conf := partial "rw/confidence.html" . -}}
+<article class="item h-entry{{ with $kind }} item--{{ . }}{{ end }}">
+  <div class="meta">
+    {{- with $kind }}<a class="chip" href="{{ printf "/categories/%s/" . | relURL }}">{{ . }}</a>{{ end }}
+    {{- with $verdict }}<span class="chip chip--solid">{{ . }}</span>{{ end }}
+    {{- with $conf }}<span class="confidence">{{ . }}</span>{{ end }}
+    <a class="date u-url" href="{{ .Permalink }}"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">{{ .Date.Format "2 Jan 2006" }}</time></a>
+  </div>
+  {{- if eq $kind "book" }}
+    {{- $isbn := partial "rw/isbn.html" . }}
+    {{- with partial "rw/book-data.html" $isbn }}
+  <a class="book-row" href="{{ printf "/books/%s/" $isbn | relURL }}">
+    {{ with .cover_url }}<img class="cover" src="{{ . }}" alt="" width="64" height="96" loading="lazy">{{ end }}
+    <span><span class="book-title">{{ .title }}</span><span class="book-author">{{ .author }}</span></span>
+  </a>
+    {{- end }}
+  {{- end }}
+  {{- with .Title }}<h2 class="item-title p-name"><a href="{{ $.Permalink }}">{{ . }}</a></h2>{{ end }}
+  <div class="item-body e-content">{{ if eq $kind "essay" }}<p>{{ .Summary | plainify | truncate 220 }}</p>{{ else }}{{ .Content }}{{ end }}</div>
+</article>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="{{ site.LanguageCode | default "en" }}">
+{{ partial "rw/head.html" . }}
+<body>
+{{- if eq .Type "post" }}
+  {{ partial "rw/band.html" (dict "page" .) }}
+  <main class="wrap stack">
+    {{- $kind := partial "rw/kind.html" . -}}
+    {{- $verdict := partial "rw/verdict.html" . -}}
+    {{- $conf := partial "rw/confidence.html" . }}
+    <article class="post h-entry">
+      <div class="meta">
+        {{- with $kind }}<a class="chip" href="{{ printf "/categories/%s/" . | relURL }}">{{ . }}</a>{{ end }}
+        {{- with $verdict }}<span class="chip chip--solid">{{ . }}</span>{{ end }}
+        {{- with $conf }}<span class="confidence">{{ . }}</span>{{ end }}
+        <a class="date u-url" href="{{ .Permalink }}"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">{{ .Date.Format "2 Jan 2006" }}</time></a>
+      </div>
+      {{- if eq $kind "book" }}
+        {{- $isbn := partial "rw/isbn.html" . }}
+        {{- with partial "rw/book-data.html" $isbn }}
+      <a class="book-row" href="{{ printf "/books/%s/" $isbn | relURL }}">
+        {{ with .cover_url }}<img class="cover" src="{{ . }}" alt="" width="64" height="96">{{ end }}
+        <span><span class="book-title">{{ .title }}</span><span class="book-author">{{ .author }}</span></span>
+      </a>
+        {{- end }}
+      {{- end }}
+      {{- with .Title }}<h1 class="post-title p-name">{{ . }}</h1>{{ end }}
+      <div class="prose e-content">{{ .Content }}</div>
+      {{ partial "microblog_syndication.html" . }}
+    </article>
+    <p><a class="more" href="{{ "/posts/" | relURL }}">All posts</a></p>
+  </main>
+{{- else if eq .RelPermalink "/posts/" }}
+  {{ partial "rw/band.html" (dict "page" . "title" "Posts" "filters" "") }}
+  <main class="wrap stack">{{ .Content }}</main>
+{{- else if eq .RelPermalink "/books/" }}
+  {{ partial "rw/band.html" (dict "page" . "title" "Books" "lede" "Ones I’d press on you, and what I’m reading now.") }}
+  <main class="wrap stack">{{ .Content }}</main>
+{{- else }}
+  {{ partial "rw/band.html" (dict "page" . "title" .Title) }}
+  <main class="wrap stack"><div class="prose">{{ .Content }}</div></main>
+{{- end }}
+{{ partial "rw/footer.html" . }}
+</body>
+</html>

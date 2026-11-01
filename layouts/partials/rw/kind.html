@@ -1,0 +1,7 @@
+{{- /* Returns the post kind from its categories: essay | book | news | note | "" */ -}}
+{{- $cats := .Params.categories | default slice -}}
+{{- $kind := "" -}}
+{{- range slice "essay" "book" "news" "note" -}}
+  {{- if and (eq $kind "") (in $cats .) -}}{{- $kind = . -}}{{- end -}}
+{{- end -}}
+{{- return $kind -}}

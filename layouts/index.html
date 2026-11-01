@@ -1,0 +1,45 @@
+{{- $p := site.Params -}}
+{{- $email := $p.rw_email | default "rw@robwatts.org" -}}
+{{- $help := slice ($p.rw_help_1 | default "Scale e-commerce tech, and know when not to build it") ($p.rw_help_2 | default "Make personalised and print-on-demand products work") ($p.rw_help_3 | default "Build small tech teams that survive growth") -}}
+{{- $posts := (where site.RegularPages "Type" "post").ByDate.Reverse -}}
+{{- $news := where $posts "Params.categories" "intersect" (slice "news") -}}
+{{- $recent := first 3 (complement $news $posts) -}}
+<!doctype html>
+<html lang="{{ site.LanguageCode | default "en" }}">
+{{ partial "rw/head.html" . }}
+<body>
+<header class="band band--home h-card">
+  <div class="wrap band-inner">
+    {{ partial "rw/nav.html" . }}
+    <div class="who">
+      {{- with $p.author.avatar }}<img class="avatar u-photo" src="{{ . }}" alt="" width="72" height="72">{{ end }}
+      <div>
+        <h1 class="name p-name">{{ $p.author.name | default site.Title }}</h1>
+        <p class="tagline p-note">{{ $p.rw_tagline | default "Incrementalist" }}</p>
+      </div>
+    </div>
+    <p class="intro">{{ $p.rw_intro | default "Ten years building Wonderbly, from scrappy startup to Penguin Random House. Now I run tech across a small group of brands, and help early-stage founders skip the mistakes I’ve already made." }}</p>
+    <ol class="help">
+      {{- range $help }}<li>{{ . }}</li>{{ end }}
+    </ol>
+    <div class="cta">
+      <a class="button u-email" href="mailto:{{ $email }}">Email me – {{ $email }}</a>
+      <p class="stance">{{ $p.rw_stance | default "Advise first. Invest occasionally." }}</p>
+    </div>
+  </div>
+</header>
+<main class="wrap stack">
+  {{- with $p.rw_now }}
+  <p class="now"><strong>Now</strong> <span>{{ . }}</span></p>
+  {{- end }}
+  {{- with $recent }}
+  <section class="stack-s h-feed" aria-labelledby="recent">
+    <h2 class="section-title" id="recent">Recently</h2>
+    {{- range . }}{{ partial "rw/item.html" . }}{{ end }}
+    <p><a class="more" href="{{ "/posts/" | relURL }}">All posts</a></p>
+  </section>
+  {{- end }}
+</main>
+{{ partial "rw/footer.html" . }}
+</body>
+</html>

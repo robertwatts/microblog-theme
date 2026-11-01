@@ -1,0 +1,10 @@
+<footer class="footer wrap">
+  {{- with site.Params.rw_bluesky }}<a rel="me" href="https://bsky.app/profile/{{ . }}">Bluesky</a>{{ end }}
+  {{- with site.Params.author.activitypub.url }}<a rel="me" href="{{ . }}">Fediverse</a>{{ end }}
+  {{- with site.Params.github_username }}<a rel="me" href="https://github.com/{{ . }}">GitHub</a>{{ end }}
+  {{- with site.Params.rw_linkedin }}<a rel="me" href="{{ . }}">LinkedIn</a>{{ end }}
+  <a href="{{ "feed.xml" | absURL }}">RSS</a>
+</footer>
+{{- range site.Params.plugins_js }}
+<script src="{{ . }}" defer></script>
+{{- end }}

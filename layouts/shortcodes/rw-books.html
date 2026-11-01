@@ -1,0 +1,55 @@
+{{- /* Put {{< rw-books >}} on a page at /books/ */ -}}
+{{- $bookPosts := where (where site.RegularPages "Type" "post") "Params.categories" "intersect" (slice "book") -}}
+{{- $verdicts := dict -}}
+{{- $why := dict -}}
+{{- range $bookPosts.ByDate -}}
+  {{- $post := . -}}
+  {{- $isbn := partial "rw/isbn.html" $post -}}
+  {{- if $isbn -}}
+    {{- $verdicts = merge $verdicts (dict $isbn (partial "rw/verdict.html" $post)) -}}
+    {{- $why = merge $why (dict $isbn ($post.Summary | plainify | truncate 140)) -}}
+  {{- end -}}
+{{- end -}}
+{{- $finished := site.Data.bookshelves.finishedreading | default slice -}}
+{{- $reading := site.Data.bookshelves.currentlyreading | default slice -}}
+
+<section class="stack-s" aria-labelledby="recommended">
+  <h2 class="section-title" id="recommended">Recommended</h2>
+  {{- $any := false }}
+  {{- range $finished }}
+    {{- $isbn := string .isbn }}
+    {{- if eq (index $verdicts $isbn) "recommend" }}{{ $any = true }}
+  <a class="book-row book-row--big" href="{{ printf "/books/%s/" $isbn | relURL }}">
+    {{ with .cover_url }}<img class="cover" src="{{ . }}" alt="" width="72" height="108" loading="lazy">{{ end }}
+    <span><span class="book-title">{{ .title }}</span><span class="book-author">{{ .author }}</span><span class="book-why">{{ index $why $isbn }}</span></span>
+  </a>
+    {{- end }}
+  {{- end }}
+  {{- if not $any }}<p class="muted">No recommendations yet. The first one is coming.</p>{{ end }}
+</section>
+
+{{- with $reading }}
+<section class="stack-s" aria-labelledby="reading">
+  <h2 class="section-title" id="reading">Reading now</h2>
+  <div class="shelf">
+    {{- range . }}
+    <a class="shelf-book" href="{{ printf "/books/%s/" (string .isbn) | relURL }}">
+      {{ with .cover_url }}<img class="cover" src="{{ . }}" alt="" width="96" height="144" loading="lazy">{{ end }}
+      <span class="book-title">{{ .title }}</span><span class="book-author">{{ .author }}</span>
+    </a>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
+
+<section aria-labelledby="also">
+  <h2 class="section-title" id="also">Also read</h2>
+  <ul class="log">
+    {{- range $finished }}
+      {{- $isbn := string .isbn }}{{ $v := index $verdicts $isbn }}
+      {{- if ne $v "recommend" }}
+    <li><a href="{{ printf "/books/%s/" $isbn | relURL }}"><span class="book-title">{{ .title }}</span> <span class="book-author">{{ .author }}</span></a><span class="log-verdict">{{ $v | default "no note" }}</span></li>
+      {{- end }}
+    {{- end }}
+  </ul>
+</section>

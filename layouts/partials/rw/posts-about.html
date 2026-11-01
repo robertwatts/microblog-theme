@@ -1,0 +1,7 @@
+{{- /* context: an ISBN. Returns posts that link it, newest first */ -}}
+{{- $isbn := . -}}
+{{- $out := slice -}}
+{{- range (where site.RegularPages "Type" "post").ByDate.Reverse -}}
+  {{- if in .RawContent $isbn -}}{{- $out = $out | append . -}}{{- end -}}
+{{- end -}}
+{{- return $out -}}

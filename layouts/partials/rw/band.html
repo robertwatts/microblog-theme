@@ -1,0 +1,9 @@
+{{- /* context: dict "page" . "title" "…" "lede" "…" "filters" (kind or nil) */ -}}
+<header class="band">
+  <div class="wrap band-inner">
+    {{ partial "rw/nav.html" .page }}
+    {{- with .title }}<h1 class="band-title">{{ . }}</h1>{{ end }}
+    {{- with .lede }}<p class="band-lede">{{ . }}</p>{{ end }}
+    {{- if isset . "filters" }}{{ partial "rw/filters.html" (dict "active" .filters) }}{{ end }}
+  </div>
+</header>

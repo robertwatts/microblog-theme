@@ -1,0 +1,10 @@
+{
+  "name": "robwatts-retag",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "plan": "tsx retag.ts plan",
+    "apply": "tsx retag.ts apply"
+  },
+  "devDependencies": { "tsx": "^4.19.0", "typescript": "^5.6.0", "@types/node": "^22.7.0" }
+}

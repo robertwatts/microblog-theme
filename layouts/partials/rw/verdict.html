@@ -1,0 +1,6 @@
+{{- $cats := .Params.categories | default slice -}}
+{{- $v := "" -}}
+{{- range slice "recommend" "fine" "skip" -}}
+  {{- if and (eq $v "") (in $cats .) -}}{{- $v = . -}}{{- end -}}
+{{- end -}}
+{{- return $v -}}

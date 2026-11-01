@@ -1,0 +1,6 @@
+{{- $cats := .Params.categories | default slice -}}
+{{- $c := "" -}}
+{{- range slice "hunch" "fairly sure" "would bet on it" -}}
+  {{- if and (eq $c "") (in $cats .) -}}{{- $c = . -}}{{- end -}}
+{{- end -}}
+{{- return $c -}}

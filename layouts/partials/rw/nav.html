@@ -1,0 +1,11 @@
+{{- $here := .RelPermalink -}}
+{{- $posts := or (hasPrefix $here "/posts/") (hasPrefix $here "/categories/") (eq .Type "post") -}}
+{{- $books := or (hasPrefix $here "/books/") (eq .Type "book") -}}
+<nav class="nav" aria-label="Main">
+  <a class="nav-home" href="{{ "/" | relURL }}">rw.</a>
+  <div class="nav-links">
+    <a href="{{ "/" | relURL }}"{{ if .IsHome }} aria-current="page"{{ end }}>Home</a>
+    <a href="{{ "/posts/" | relURL }}"{{ if $posts }} aria-current="page"{{ end }}>Posts</a>
+    <a href="{{ "/books/" | relURL }}"{{ if $books }} aria-current="page"{{ end }}>Books</a>
+  </div>
+</nav>
