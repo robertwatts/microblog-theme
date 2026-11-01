@@ -74,12 +74,14 @@ All lowercase; templates match names exactly.
 - Shelf data: `.Site.Data.bookshelves.<shelf name lowercased, no spaces>` with `title`, `author`, `isbn`, `cover_url`. Rob has "Currently reading" plus year shelves like "2024 highlights"; the theme treats every shelf except `currentlyreading` and `wanttoread` as read.
 - Book detail pages: Bookshelves → Settings → "Link books to detail pages on your blog". Template is `layouts/book/single.html` with params `isbn`, `title`, `author`, `cover_url`, `background_color`, `description`, `shelves[]{name,type}`, `finished_at`. Pages only exist for books linked from posts, so links use `rw/book-url.html` to fall back to micro.blog's page.
 - Enabling detail pages auto-installs the "Book reading goals" plug-in, which has its own `book/single.html`; uninstall it.
+- Uninstalling a plug-in removes its shortcodes, and one post still using one fails every build (red "Theme error" on the Design page; the live site silently stays on the last good build). "Year in books for 2023" uses `{{< bookgoals 2023 >}}`, hence the empty `layouts/shortcodes/bookgoals.html`.
+- The blog's Hugo version is set to 0.91 on the Design page.
 - Micropub: `https://micro.blog/micropub`, Bearer app token. `q=source` lists posts; `q=category` lists categories; categories can be created via `mp-channel=categories`. Updates: `action: update` with `add: {category}` returns 200 but does nothing; `replace: {category: [...]}` works and leaves other properties alone, so send the full merged list. Paging with `limit`/`offset` on `q=source` is not confirmed.
 - No API for blog settings; those are manual.
 
 ## Testing
 
-Build locally against a stand-in before pushing: Hugo 0.140, a site with `theme: ["<this repo>", "theme-blank"]` (clone `github.com/microdotblog/theme-blank`), a few posts with `type: post` and categories, `content/books/<isbn>.md` with `type: book`, and JSON files in `data/bookshelves/`. Screenshot at 390px wide in light and dark mode.
+Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set to), a site with `theme: ["<this repo>", "theme-blank"]` (clone `github.com/microdotblog/theme-blank`), a few posts with `type: post` and categories, `content/books/<isbn>.md` with `type: book`, and JSON files in `data/bookshelves/`. Screenshot at 390px wide in light and dark mode.
 
 ## Status (as of 1 Nov 2026)
 
@@ -87,11 +89,11 @@ Build locally against a stand-in before pushing: Hugo 0.140, a site with `theme:
 - [x] `/posts/` live, 55 posts
 - [x] Categories created: note, book, news, essay, recommend
 - [x] v1.0.2 pushed
-- [ ] **v1.0.2 Update not live**: after the 1 Nov rebuild the nav still links `/books/` and "Also read" is empty, so it's still running 1.0.0
+- [ ] **v1.0.3 to Update** (adds the `bookgoals` stub; builds have failed since "Book reading goals" was uninstalled, so 1.0.2 never went live either)
 - [x] Books page URL changed to `/reading/`
-- [ ] `/reading/` bookshelf option still on (micro.blog's shelf HTML is appended below "Also read"); set it to None
 - [x] "Link books to detail pages" on (e.g. `/books/9781783783441/` exists)
-- [ ] "Book reading goals" still loaded (`bookgoals.css` in head; detail pages render without the rw nav); uninstall, then Logs → Rebuild
+- [x] "Book reading goals" uninstalled
+- [ ] After the first good build, recheck: nav links `/reading/`, no micro.blog shelf HTML under "Also read" (else set the page's bookshelf option to None), no `bookgoals.css` in head
 - [ ] Check a `/books/{isbn}/` page renders with `layouts/book/single.html`
 - [x] Retag old posts: DeepSeek → news; Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [ ] Decide on the other retag suggestions (Orion, Heroku, AI glasses, ahastack → note; 5 long 2021 posts → essay); 13 posts are still in old "Books", 5 in "Articles"
