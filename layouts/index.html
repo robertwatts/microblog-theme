@@ -1,6 +1,5 @@
 {{- $p := site.Params -}}
-{{- $email := $p.rw_email | default "rw@robwatts.org" -}}
-{{- $help := slice ($p.rw_help_1 | default "Scale e-commerce tech, and know when not to build it") ($p.rw_help_2 | default "Make personalised and print-on-demand products work") ($p.rw_help_3 | default "Build small tech teams that survive growth") -}}
+{{- $about := partialCached "rw/about-page.html" . "about" -}}
 {{- $posts := (where site.RegularPages "Type" "post").ByDate.Reverse -}}
 {{- $recent := first 3 $posts -}}
 <!doctype html>
@@ -14,17 +13,16 @@
       {{- with $p.author.avatar }}<img class="avatar u-photo" src="{{ . }}" alt="" width="72" height="72">{{ end }}
       <div>
         <h1 class="name p-name">{{ $p.author.name | default site.Title }}</h1>
-        <p class="tagline p-note">{{ $p.rw_tagline | default "Incrementalist" }}</p>
+        <p class="tagline">{{ $p.rw_tagline | default "Incrementalist" }}</p>
       </div>
     </div>
-    <p class="intro">{{ $p.rw_intro | default "Ten years building Wonderbly, from scrappy startup to Penguin Random House. Now I run tech across a small group of brands, and help early-stage founders skip the mistakes I’ve already made." }}</p>
-    <ol class="help">
-      {{- range $help }}<li>{{ . }}</li>{{ end }}
-    </ol>
-    <div class="cta">
-      <a class="button u-email" href="mailto:{{ $email }}">Email me – {{ $email }}</a>
-      <p class="stance">{{ $p.rw_stance | default "Advise first. Invest occasionally." }}</p>
+    {{- /* Summary = first paragraph of the About page */}}
+    <div class="intro p-note">
+      {{- with $about.lede }}{{ . | safeHTML }}{{ else }}<p>Ten years building Wonderbly, from scrappy startup to Penguin Random House. Now I run tech across a small group of brands, and help early-stage founders skip the mistakes I’ve already made.</p>{{ end -}}
     </div>
+    {{- with $about.page }}
+    <p class="cta"><a class="button" href="{{ .RelPermalink }}">More about me</a></p>
+    {{- end }}
   </div>
 </header>
 <main class="wrap stack">

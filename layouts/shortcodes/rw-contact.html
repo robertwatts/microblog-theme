@@ -1,0 +1,10 @@
+{{- /* {{< rw-contact >}} on the About page: email button, then the profiles from rw/socials.html */ -}}
+{{- $email := site.Params.rw_email | default "rw@robwatts.org" -}}
+<div class="contact">
+  <a class="button u-email" href="mailto:{{ $email }}">Email {{ $email }}</a>
+  <ul class="contact-links">
+    {{- range partial "rw/socials.html" . }}
+    <li><a rel="me" href="{{ .url }}"><span class="contact-k">{{ .label }}</span><span class="contact-v">{{ .handle }}</span></a></li>
+    {{- end }}
+  </ul>
+</div>

@@ -143,12 +143,11 @@ main.wrap { padding-block: var(--s-5) var(--s-6); }
 .name { margin: 0; font-size: var(--fs-7); font-weight: 600; letter-spacing: -0.015em; line-height: 1; }
 .tagline { margin: var(--s-1) 0 0; font-family: var(--mono); font-size: var(--fs-0); color: var(--band-muted); }
 .intro { margin: 0; font-size: var(--fs-4); line-height: 1.4; max-width: 34rem; text-wrap: pretty; }
+/* Summary and About lede arrive as <p>s from the About page */
+.intro > p, .band-lede > p { margin: 0; }
+.intro > p + p, .band-lede > p + p { margin-top: var(--s-2); }
 
-.help { margin: 0; padding: 0; list-style: none; counter-reset: help; display: grid; gap: var(--s-1); }
-.help li { counter-increment: help; display: flex; gap: var(--s-2); line-height: 1.45; }
-.help li::before { content: "0" counter(help); font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; color: var(--band-muted); padding-top: 0.3rem; }
-
-.cta { display: grid; gap: var(--s-1); max-width: 26rem; }
+.cta { margin: 0; max-width: 26rem; }
 .button {
   display: flex; align-items: center; justify-content: center; text-align: center; text-decoration: none;
   min-height: 52px; padding: var(--s-2) var(--s-3); border-radius: 8px;
@@ -157,7 +156,6 @@ main.wrap { padding-block: var(--s-5) var(--s-6); }
   overflow-wrap: anywhere;
 }
 .button:hover { opacity: 0.88; }
-.stance { margin: 0; text-align: center; font-family: var(--mono); font-size: var(--fs-0); color: var(--band-muted); }
 
 /* Filters */
 
@@ -287,6 +285,29 @@ a.book-row:hover .book-title { text-decoration: underline; }
 .about-book summary::before { content: "+"; width: 1ch; color: var(--warm); }
 .about-book[open] summary::before { content: "−"; }
 .about-book .prose { font-size: var(--fs-2); color: var(--sec); }
+
+/* About page: Rob's markdown, laid out here. ## headings read as section titles, a numbered list gets 01 02 03 */
+
+.about-page h2 { margin: var(--s-6) 0 var(--s-2); font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; letter-spacing: 0.06em; line-height: 1.6; color: var(--warm); }
+.about-page ol { padding: 0; list-style: none; counter-reset: about; }
+.about-page ol > li { counter-increment: about; position: relative; padding-left: 2.5rem; }
+.about-page ol > li + li { margin-top: var(--s-3); }
+.about-page ol > li::before {
+  content: counter(about, decimal-leading-zero); position: absolute; left: 0; top: 0.3em;
+  font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; color: var(--warm);
+}
+
+.contact { display: grid; gap: var(--s-3); margin-top: var(--s-4); }
+.contact .button { max-width: 26rem; background: var(--accent); color: var(--on-accent) !important; }
+.prose .contact-links { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.prose .contact-links li + li { margin-top: 0; }
+.contact-links a {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s-3);
+  min-height: var(--tap); border-bottom: 1px solid var(--line); text-decoration: none;
+}
+.contact-k { font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; color: var(--muted); }
+.contact-v { font-size: var(--fs-2); overflow-wrap: anywhere; text-align: right; }
+.contact-links a:hover .contact-v { text-decoration: underline; }
 
 /* Footer */
 

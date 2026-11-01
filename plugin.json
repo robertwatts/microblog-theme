@@ -1,18 +1,13 @@
 {
-  "version": "1.0.9",
+  "version": "1.1.0",
   "title": "robwatts.org theme",
-  "description": "Sunflower homepage, Posts and Books for robwatts.org. Use with the Blank theme.",
+  "description": "Sunflower homepage, Posts, Books and About for robwatts.org. Longer copy lives in the About page.",
   "includes": ["/css/rw.css"],
   "fields": [
     { "field": "params.rw_tagline", "label": "Tagline", "placeholder": "Incrementalist" },
-    { "field": "params.rw_intro", "label": "Intro paragraph", "placeholder": "Ten years building Wonderbly…" },
-    { "field": "params.rw_help_1", "label": "Help with #1", "placeholder": "Scale e-commerce tech…" },
-    { "field": "params.rw_help_2", "label": "Help with #2", "placeholder": "Make personalised and print-on-demand products work" },
-    { "field": "params.rw_help_3", "label": "Help with #3", "placeholder": "Build small tech teams that survive growth" },
-    { "field": "params.rw_email", "label": "Email", "placeholder": "rw@robwatts.org" },
-    { "field": "params.rw_stance", "label": "Line under the email button", "placeholder": "Advise first. Invest occasionally." },
     { "field": "params.rw_now", "label": "Now (one line, update often)", "placeholder": "Reading too many books at once…" },
+    { "field": "params.rw_email", "label": "Email", "placeholder": "rw@robwatts.org" },
     { "field": "params.rw_bluesky", "label": "Bluesky handle", "placeholder": "robwatts.org" },
-    { "field": "params.rw_linkedin", "label": "LinkedIn URL", "placeholder": "https://www.linkedin.com/in/…" }
+    { "field": "params.rw_linkedin", "label": "LinkedIn URL", "placeholder": "https://www.linkedin.com/in/robertjoelwatts/" }
   ]
 }

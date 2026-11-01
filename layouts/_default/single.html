@@ -8,6 +8,10 @@
 {{- else if eq .RelPermalink "/reading/" }}
   {{ partial "rw/band.html" (dict "page" . "title" "Books" "lede" "Ones I’d press on you, and what I’m reading now.") }}
   <main class="wrap stack">{{ .Content }}</main>
+{{- else if eq .RelPermalink "/about/" }}
+  {{- $about := partialCached "rw/about-page.html" . "about" }}
+  {{ partial "rw/band.html" (dict "page" . "title" .Title "ledeHTML" $about.lede) }}
+  <main class="wrap stack"><div class="prose about-page">{{ $about.body | safeHTML }}</div></main>
 {{- else }}
   {{ partial "rw/band.html" (dict "page" . "title" .Title) }}
   <main class="wrap stack"><div class="prose">{{ .Content }}</div></main>

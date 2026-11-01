@@ -1,0 +1,11 @@
+{{- /* The About page (/about/), a micro.blog page Rob edits. Its first paragraph is the homepage summary and the About band's lede; the rest is the body. Returns dict page, lede, body; empty when there's no page. */ -}}
+{{- $out := dict -}}
+{{- range first 1 (where site.RegularPages "RelPermalink" "/about/") -}}
+  {{- $content := string .Content -}}
+  {{- $lede := "" -}}
+  {{- with findRE `(?s)<p>.*?</p>` $content 1 }}{{ $lede = index . 0 }}{{ end -}}
+  {{- $body := $content -}}
+  {{- with $lede }}{{ $body = replace $content . "" }}{{ end -}}
+  {{- $out = dict "page" . "lede" $lede "body" $body -}}
+{{- end -}}
+{{- return $out -}}

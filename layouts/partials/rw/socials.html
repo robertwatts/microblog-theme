@@ -1,0 +1,19 @@
+{{- /* Rob's profiles, for the footer and {{< rw-contact >}}. Plug-in settings override the defaults. Returns a list of dict label, url, handle. */ -}}
+{{- $p := site.Params -}}
+{{- $host := replaceRE `^https?://([^/]+).*$` "$1" site.BaseURL -}}
+{{- $out := slice -}}
+{{- with $p.rw_linkedin | default "https://www.linkedin.com/in/robertjoelwatts/" -}}
+  {{- $out = $out | append (dict "label" "LinkedIn" "url" . "handle" (path.Base (strings.TrimSuffix "/" .))) -}}
+{{- end -}}
+{{- with $p.rw_bluesky | default "robwatts.org" -}}
+  {{- $out = $out | append (dict "label" "Bluesky" "url" (printf "https://bsky.app/profile/%s" .) "handle" (printf "@%s" .)) -}}
+{{- end -}}
+{{- with $p.author.activitypub.url -}}
+  {{- $out = $out | append (dict "label" "Fediverse" "url" . "handle" (printf "@%s@%s" (path.Base .) $host)) -}}
+{{- end -}}
+{{- $github := $p.github_username | default "" -}}
+{{- if or (not $github) (hasPrefix $github "[") }}{{ $github = "robertwatts" }}{{ end }}{{/* skip micro.blog's "[GITHUB_USERNAME]" placeholder */}}
+{{- with $github -}}
+  {{- $out = $out | append (dict "label" "GitHub" "url" (printf "https://github.com/%s" .) "handle" (printf "@%s" .)) -}}
+{{- end -}}
+{{- return $out -}}
