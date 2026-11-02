@@ -1,5 +1,7 @@
-{{- /* Homepage summary HTML: the Home page (/home/) if Rob has made one, else the About page's first paragraph */ -}}
+{{- /* Homepage summary HTML: the Home page (/home/) if Rob has made one, else the About page's opening paragraph.
+       A paragraph that is just a link ([More about me](/about/) on its own line) becomes a button: <p class="cta"> */ -}}
 {{- $out := "" -}}
 {{- range first 1 (where site.RegularPages "RelPermalink" "/home/") }}{{ $out = string .Content }}{{ end -}}
 {{- if not (trim $out " \n") }}{{ $out = (partialCached "rw/about-page.html" . "about").lede | default "" }}{{ end -}}
+{{- $out = replaceRE `<p>\s*<a ([^>]*)>([^<]*)</a>\s*</p>` `<p class="cta"><a class="button" $1>$2</a></p>` $out -}}
 {{- return $out -}}

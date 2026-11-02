@@ -151,6 +151,9 @@ main.wrap { padding-block: var(--s-5) var(--s-6); }
 .intro br, .band-lede br { display: none; }
 
 .cta { margin: 0; max-width: 26rem; }
+.intro > .cta { margin-top: var(--s-4); }
+.intro > .cta + .cta { margin-top: var(--s-2); }
+.intro > .cta:first-child { margin-top: 0; }
 .button {
   display: flex; align-items: center; justify-content: center; text-align: center; text-decoration: none;
   min-height: 52px; padding: var(--s-2) var(--s-3); border-radius: 8px;

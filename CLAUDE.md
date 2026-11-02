@@ -16,7 +16,7 @@ const robwatts = {
   nav: ["Home", "Posts", "Books", "About"],
   home: {
     summary: "the Home page (/home/, a micro.blog page; a plain return = new line), else a paragraph opening the About page",
-    link: "More about me → /about/ (no email on the homepage)",
+    buttons: "from the Home page: a link alone on its own line becomes a button; none in the template",
     now: "one changeable human line",
     recent: "latest 3 posts",
   },
@@ -64,7 +64,7 @@ All lowercase; templates match names exactly.
 
 | Path | Renders |
 | --- | --- |
-| `layouts/index.html` | Homepage: name, tagline, the Home page's text (via `rw/summary.html`), "More about me", Now, recent posts |
+| `layouts/index.html` | Homepage: name, tagline, the Home page's text and buttons (via `rw/summary.html`), Now, recent posts |
 | `layouts/post/single.html` | Posts (must live here: Tiny's `post/single.html` beats any `_default/single.html`) |
 | `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and `/about/` get special bands (a paragraph before About's first heading becomes its lede); `/home/` redirects to `/` |
 | `layouts/shortcodes/bookgoals.html` | Empty stub so old `{{< bookgoals YEAR >}}` posts still build |
@@ -118,7 +118,8 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] v1.0.9 live (1 Nov): "rw." favicon replaces micro.blog's photo; unused `404.html` removed; Design → Edit CSS cleared
 - [x] v1.1.0 live (1 Nov): About page structure, About in nav, contact block, socials default to Rob's handles (LinkedIn robertjoelwatts, Bluesky robwatts.org, GitHub robertwatts). Rob rewrote the About copy
 - [x] v1.1.1 live (2 Nov): homepage summary from its own Home page (`/home/`), line breaks kept; loose lists on About tightened. Rob made Pages → Home (`/home/`)
-- [ ] v1.1.2 pushed (2 Nov): About lede only taken from a paragraph before the first heading (Rob's About now opens with "Day job", which had lost its paragraph to the band)
+- [x] v1.1.2 live (2 Nov): About lede only taken from a paragraph before the first heading (Rob's About now opens with "Day job", which had lost its paragraph to the band)
+- [ ] v1.1.3 pushed (2 Nov): "More about me" removed from the template; a link alone on its own line in the Home page renders as a button (Rob adds `[More about me](/about/)` there)
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
