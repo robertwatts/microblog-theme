@@ -15,7 +15,7 @@ const robwatts = {
   },
   nav: ["Home", "Posts", "Books", "About"],
   home: {
-    summary: "the Home page (/home/, a micro.blog page; a plain return = new line), else About's first paragraph",
+    summary: "the Home page (/home/, a micro.blog page; a plain return = new line), else a paragraph opening the About page",
     link: "More about me → /about/ (no email on the homepage)",
     now: "one changeable human line",
     recent: "latest 3 posts",
@@ -64,9 +64,9 @@ All lowercase; templates match names exactly.
 
 | Path | Renders |
 | --- | --- |
-| `layouts/index.html` | Homepage: name, tagline, the About page's first paragraph, "More about me", Now, recent posts |
+| `layouts/index.html` | Homepage: name, tagline, the Home page's text (via `rw/summary.html`), "More about me", Now, recent posts |
 | `layouts/post/single.html` | Posts (must live here: Tiny's `post/single.html` beats any `_default/single.html`) |
-| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and `/about/` get special bands (About's first paragraph becomes its lede); `/home/` redirects to `/` |
+| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and `/about/` get special bands (a paragraph before About's first heading becomes its lede); `/home/` redirects to `/` |
 | `layouts/shortcodes/bookgoals.html` | Empty stub so old `{{< bookgoals YEAR >}}` posts still build |
 | `layouts/index.archivehtml.html`, `index.photoshtml.html` | `/archive/` → `/posts/`, `/photos/` → home, via `rw/redirect.html` (meta refresh, canonical, noindex) |
 | `layouts/_default/list.html` | Category pages |
@@ -117,7 +117,8 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] v1.0.8 live (1 Nov): tightened `rw.css` (9-step type scale, 44px tap targets, full-width desktop, one cover per book post, dark focus ring); Recommended and "no note" hidden when empty
 - [x] v1.0.9 live (1 Nov): "rw." favicon replaces micro.blog's photo; unused `404.html` removed; Design → Edit CSS cleared
 - [x] v1.1.0 live (1 Nov): About page structure, About in nav, contact block, socials default to Rob's handles (LinkedIn robertjoelwatts, Bluesky robwatts.org, GitHub robertwatts). Rob rewrote the About copy
-- [ ] v1.1.1 pushed (2 Nov): homepage summary from its own Home page (`/home/`), line breaks kept; loose lists on About tightened. Rob creates Pages → Home (URL `/home/`); until then home keeps About's first paragraph
+- [x] v1.1.1 live (2 Nov): homepage summary from its own Home page (`/home/`), line breaks kept; loose lists on About tightened. Rob made Pages → Home (`/home/`)
+- [ ] v1.1.2 pushed (2 Nov): About lede only taken from a paragraph before the first heading (Rob's About now opens with "Day job", which had lost its paragraph to the band)
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
