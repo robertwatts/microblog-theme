@@ -1,14 +1,19 @@
+{{- /* Home, then micro.blog's navigation: the pages ticked "Include in navigation", in micro.blog's order, labelled by their titles.
+       A page that is a link (redirect_url) goes straight there. Posts also lights up on posts and category pages, Books on book pages. */ -}}
 {{- $here := .RelPermalink -}}
-{{- $posts := or (hasPrefix $here "/posts/") (hasPrefix $here "/categories/") (eq .Type "post") -}}
-{{- $books := or (hasPrefix $here "/reading/") (hasPrefix $here "/books/") (eq .Type "book") -}}
+{{- $section := "" -}}
+{{- if or (hasPrefix $here "/categories/") (eq .Type "post") }}{{ $section = "/posts/" }}{{ end -}}
+{{- if or (hasPrefix $here "/books/") (eq .Type "book") }}{{ $section = "/reading/" }}{{ end -}}
 <nav class="nav" aria-label="Main">
   <a class="nav-home" href="{{ "/" | relURL }}">rw.</a>
   <div class="nav-links">
     <a href="{{ "/" | relURL }}"{{ if .IsHome }} aria-current="page"{{ end }}>Home</a>
-    <a href="{{ "/posts/" | relURL }}"{{ if $posts }} aria-current="page"{{ end }}>Posts</a>
-    <a href="{{ "/reading/" | relURL }}"{{ if $books }} aria-current="page"{{ end }}>Books</a>
-    {{- with (partialCached "rw/about-page.html" . "about").page }}
-    <a href="{{ .RelPermalink }}"{{ if hasPrefix $here .RelPermalink }} aria-current="page"{{ end }}>{{ .Title | default "About" }}</a>
+    {{- range site.Menus.main }}
+      {{- $url := .URL | relLangURL -}}
+      {{- $href := $url }}{{ with .Page }}{{ with .Params.redirect_url }}{{ $href = . }}{{ end }}{{ end -}}
+      {{- if not (in (slice ("/" | relLangURL) ("/home/" | relLangURL)) $url) }}{{/* Home is already first; /home/ only feeds it */}}
+    <a href="{{ $href | safeURL }}"{{ if or (hasPrefix $here $url) (eq $section $url) }} aria-current="page"{{ end }}>{{ .Name }}</a>
+      {{- end }}
     {{- end }}
   </div>
 </nav>

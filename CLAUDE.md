@@ -13,7 +13,7 @@ const robwatts = {
     register: "talking at the pub, not on a panel",
     avoid: ["passionate about", "leveraging", "journey", "thought leader"],
   },
-  nav: ["Home", "Posts", "Books", "Work"], // the last is the About page's own title
+  nav: "Home, then micro.blog's menu (Pages ticked 'Include in navigation', labelled by title); intended: Posts, Books, Work",
   home: {
     summary: "the Home page (/home/, a micro.blog page; a plain return = new line), else a paragraph opening the About page",
     buttons: "from the Home page: a link alone on its own line becomes a button; none in the template",
@@ -96,6 +96,7 @@ All lowercase; templates match names exactly.
 - Micropub: `https://micro.blog/micropub`, Bearer app token. `q=source` lists posts; `q=category` lists categories; categories can be created via `mp-channel=categories`. Updates: `action: update` with `add: {category}` returns 200 but does nothing; `replace: {category: [...]}` works and leaves other properties alone, so send the full merged list. Paging with `limit`/`offset` on `q=source` is not confirmed.
 - No API for blog settings; those are manual.
 - Changing a page's URL leaves the old URL serving its last build: after Rob moved About to `/work/`, `/about/` still returned 200 with stale markup (2 Nov). Nothing redirects it.
+- Pages ticked "Include in navigation" get `menu: main` and land in `site.Menus.main` (Tiny's header loops over it; Blank's sitemap lists them, which is how to see the menu from outside). On 2 Nov it held micro.blog's defaults: Work, Articles, Archive, Photos, Replies, Home; Posts and Reading weren't ticked. Untested: whether reordering on the Pages screen sets a menu weight. Without one, Hugo sorts the menu alphabetically.
 
 ## Testing
 
@@ -122,6 +123,7 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] v1.1.2 live (2 Nov): About lede only taken from a paragraph before the first heading (Rob's About now opens with "Day job", which had lost its paragraph to the band)
 - [ ] v1.1.3 pushed (2 Nov): "More about me" removed from the template; a link alone on its own line in the Home page renders as a button (Rob adds `[More about me](/about/)` there)
 - [ ] v1.1.4 (2 Nov): Rob moved About to `/work/` and titled it Work, which broke the nav and the page's layout (both matched `/about/`). The URL now lives only in `rw/about-page.html`; the nav label is the page title. Rob: point the Home page button at `/work/`
+- [ ] v1.1.5 (2 Nov): nav reads micro.blog's menu (`rw/nav.html`); Home and the current-section highlight stay in the theme, which also skips `/` and `/home/` if they're ticked. After Rob's Pages pass the menu held Home, Work, Posts; Reading wasn't ticked yet. Check the live order
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
