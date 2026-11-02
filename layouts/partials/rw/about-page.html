@@ -1,6 +1,9 @@
-{{- /* The About page (/about/), a micro.blog page Rob edits. If it opens with a paragraph (before any heading), that paragraph is the About band's lede (and the homepage fallback); the rest is the body. Returns dict page, lede, body; empty when there's no page. */ -}}
-{{- $out := dict -}}
-{{- range first 1 (where site.RegularPages "RelPermalink" "/about/") -}}
+{{- /* The About page, a micro.blog page Rob edits. Its URL is set here and nowhere else: change $url if Rob moves the page.
+       If it opens with a paragraph (before any heading), that paragraph is the band's lede (and the homepage fallback); the rest is the body.
+       Returns dict url, plus page, lede, body when the page exists. The nav label is the page's own title. */ -}}
+{{- $url := "/work/" -}}
+{{- $out := dict "url" $url -}}
+{{- range first 1 (where site.RegularPages "RelPermalink" $url) -}}
   {{- $content := string .Content -}}
   {{- $lede := "" -}}
   {{- if hasPrefix (trim $content " \n") "<p>" -}}
@@ -8,6 +11,6 @@
   {{- end -}}
   {{- $body := $content -}}
   {{- with $lede }}{{ $body = replace $content . "" }}{{ end -}}
-  {{- $out = dict "page" . "lede" $lede "body" $body -}}
+  {{- $out = dict "url" $url "page" . "lede" $lede "body" $body -}}
 {{- end -}}
 {{- return $out -}}
