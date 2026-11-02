@@ -295,15 +295,21 @@ a.book-row:hover .book-title { text-decoration: underline; }
 /* About page: Rob's markdown, laid out here. ## headings read as section titles, a numbered list gets 01 02 03 */
 
 .about-page h2 { margin: var(--s-6) 0 var(--s-2); font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; letter-spacing: 0.06em; line-height: 1.6; color: var(--warm); }
-.about-page ol { padding: 0; list-style: none; counter-reset: about; }
-.about-page ol > li { counter-increment: about; position: relative; padding-left: 2.5rem; }
-.about-page ol > li + li { margin-top: var(--s-3); }
+/* Numbered and bulleted lists share one look: a warm mono marker (01, 02… or a dash) in its own column.
+   Bullets are top-level only (> ul), so the contact rows keep their own layout. */
+.about-page ol, .about-page > ul { padding: 0; list-style: none; }
+.about-page ol { counter-reset: about; }
+.about-page ol > li, .about-page > ul > li { position: relative; padding-left: 2.5rem; }
+.about-page ol > li { counter-increment: about; }
+.about-page ol > li + li, .about-page > ul > li + li { margin-top: var(--s-3); }
 .about-page li > p { margin-block: 0; } /* items separated by blank lines arrive wrapped in <p> */
 .about-page li > p + p { margin-top: var(--s-2); }
-.about-page ol > li::before {
-  content: counter(about, decimal-leading-zero); position: absolute; left: 0; top: 0.3em;
+.about-page ol > li::before, .about-page > ul > li::before {
+  position: absolute; left: 0; top: 0.3em;
   font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; color: var(--warm);
 }
+.about-page ol > li::before { content: counter(about, decimal-leading-zero); }
+.about-page > ul > li::before { content: "—"; }
 
 .contact { margin-top: var(--s-4); }
 .at::before { content: "@"; } /* stands in for "@" in addresses until the contact script swaps in the real one */
