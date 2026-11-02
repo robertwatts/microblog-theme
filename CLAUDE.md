@@ -26,7 +26,7 @@ const robwatts = {
     statement: "operator → advisor → occasional investor",
     helpWith: ["scaling e-com tech", "personalised/POD products", "small tech teams"],
     stance: "advise first, invest occasionally",
-    contact: "{{< rw-contact >}}: email button, then LinkedIn, Bluesky, Fediverse, GitHub",
+    contact: "{{< rw-contact >}}: one row each for Email, LinkedIn, Bluesky, Fediverse, GitHub. No address in the HTML: '@' in handles is a CSS-drawn <span class=at>, an inline script restores it and adds mailto:",
   },
   copy: "long copy lives in pages; plug-in settings only hold one-liners",
   posts: {
@@ -124,6 +124,7 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [ ] v1.1.3 pushed (2 Nov): "More about me" removed from the template; a link alone on its own line in the Home page renders as a button (Rob adds `[More about me](/about/)` there)
 - [ ] v1.1.4 (2 Nov): Rob moved About to `/work/` and titled it Work, which broke the nav and the page's layout (both matched `/about/`). The URL now lives only in `rw/about-page.html`; the nav label is the page title. Rob: point the Home page button at `/work/`
 - [ ] v1.1.5 (2 Nov): nav reads micro.blog's menu (`rw/nav.html`); Home and the current-section highlight stay in the theme, which also skips `/` and `/home/` if they're ticked. After Rob's Pages pass the menu held Home, Work, Posts; Reading wasn't ticked yet. Check the live order
+- [ ] v1.1.6 (2 Nov): contact block's email button becomes a plain first row, and addresses are hidden from crawlers (the Fediverse handle `@rw@robwatts.org` contained the email, so it's hidden too)
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`

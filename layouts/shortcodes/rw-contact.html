@@ -1,10 +1,19 @@
-{{- /* {{< rw-contact >}} on the About page: email button, then the profiles from rw/socials.html */ -}}
+{{- /* {{< rw-contact >}} on the About page: Email, then the profiles from rw/socials.html, one row each.
+       No address sits in the HTML as written: an "@" inside a handle is an empty <span class="at"> (CSS draws the "@"),
+       and the script puts real "@"s back and gives Email its mailto:, so crawlers that don't run JavaScript find nothing. */ -}}
 {{- $email := site.Params.rw_email | default "rw@robwatts.org" -}}
+{{- $rows := slice (dict "label" "Email" "handle" $email "mail" true) | append (partial "rw/socials.html" .) -}}
 <div class="contact">
-  <a class="button u-email" href="mailto:{{ $email }}">Email {{ $email }}</a>
   <ul class="contact-links">
-    {{- range partial "rw/socials.html" . }}
-    <li><a rel="me" href="{{ .url }}"><span class="contact-k">{{ .label }}</span><span class="contact-v">{{ .handle }}</span></a></li>
+    {{- range $rows }}
+    {{- $handle := replaceRE `(.)@` `$1<span class="at"></span>` (htmlEscape .handle) }}
+    <li><a {{ if .mail }}data-mail{{ else }}rel="me" href="{{ .url }}"{{ end }}><span class="contact-k">{{ .label }}</span><span class="contact-v">{{ $handle | safeHTML }}</span></a></li>
     {{- end }}
   </ul>
+  <script>
+    (function (box) {
+      box.querySelectorAll(".at").forEach(function (s) { s.replaceWith("@"); });
+      box.querySelectorAll("a[data-mail]").forEach(function (a) { a.href = "mailto:" + a.querySelector(".contact-v").textContent; });
+    })(document.currentScript.parentNode);
+  </script>
 </div>

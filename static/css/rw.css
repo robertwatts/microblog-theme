@@ -305,8 +305,8 @@ a.book-row:hover .book-title { text-decoration: underline; }
   font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; color: var(--warm);
 }
 
-.contact { display: grid; gap: var(--s-3); margin-top: var(--s-4); }
-.contact .button { max-width: 26rem; background: var(--accent); color: var(--on-accent) !important; }
+.contact { margin-top: var(--s-4); }
+.at::before { content: "@"; } /* stands in for "@" in addresses until the contact script swaps in the real one */
 .prose .contact-links { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .prose .contact-links li + li { margin-top: 0; }
 .contact-links a {
