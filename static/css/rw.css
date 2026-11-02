@@ -146,6 +146,9 @@ main.wrap { padding-block: var(--s-5) var(--s-6); }
 /* Summary and About lede arrive as <p>s from the About page */
 .intro > p, .band-lede > p { margin: 0; }
 .intro > p + p, .band-lede > p + p { margin-top: var(--s-2); }
+/* A plain return in the page starts a new line; hide <br> so a markdown hard break doesn't double it */
+.intro > p, .band-lede > p { white-space: pre-line; }
+.intro br, .band-lede br { display: none; }
 
 .cta { margin: 0; max-width: 26rem; }
 .button {
@@ -292,6 +295,8 @@ a.book-row:hover .book-title { text-decoration: underline; }
 .about-page ol { padding: 0; list-style: none; counter-reset: about; }
 .about-page ol > li { counter-increment: about; position: relative; padding-left: 2.5rem; }
 .about-page ol > li + li { margin-top: var(--s-3); }
+.about-page li > p { margin-block: 0; } /* items separated by blank lines arrive wrapped in <p> */
+.about-page li > p + p { margin-top: var(--s-2); }
 .about-page ol > li::before {
   content: counter(about, decimal-leading-zero); position: absolute; left: 0; top: 0.3em;
   font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; color: var(--warm);

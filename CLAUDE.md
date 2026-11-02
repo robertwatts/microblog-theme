@@ -15,7 +15,7 @@ const robwatts = {
   },
   nav: ["Home", "Posts", "Books", "About"],
   home: {
-    summary: "first paragraph of the About page",
+    summary: "the Home page (/home/, a micro.blog page; a plain return = new line), else About's first paragraph",
     link: "More about me → /about/ (no email on the homepage)",
     now: "one changeable human line",
     recent: "latest 3 posts",
@@ -66,7 +66,7 @@ All lowercase; templates match names exactly.
 | --- | --- |
 | `layouts/index.html` | Homepage: name, tagline, the About page's first paragraph, "More about me", Now, recent posts |
 | `layouts/post/single.html` | Posts (must live here: Tiny's `post/single.html` beats any `_default/single.html`) |
-| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and `/about/` get special bands (About's first paragraph becomes its lede) |
+| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and `/about/` get special bands (About's first paragraph becomes its lede); `/home/` redirects to `/` |
 | `layouts/shortcodes/bookgoals.html` | Empty stub so old `{{< bookgoals YEAR >}}` posts still build |
 | `layouts/index.archivehtml.html`, `index.photoshtml.html` | `/archive/` → `/posts/`, `/photos/` → home, via `rw/redirect.html` (meta refresh, canonical, noindex) |
 | `layouts/_default/list.html` | Category pages |
@@ -74,7 +74,7 @@ All lowercase; templates match names exactly.
 | `static/favicon.svg`, `favicon-32.png`, `favicon.ico`, `apple-touch-icon.png` | "rw." on Sunflower yellow, JetBrains Mono Bold as outlines; `rw/head.html` links them |
 | `layouts/shortcodes/rw-posts.html`, `rw-books.html` | Content of the `/posts/` and `/reading/` pages |
 | `layouts/shortcodes/rw-contact.html` | Contact block Rob places in the About page |
-| `layouts/partials/rw/*` | head, nav, band, filters, footer, item, plus helpers that `return` values (kind, verdict, confidence, isbn, book-data, book-url, posts-about, about-page, socials) |
+| `layouts/partials/rw/*` | head, nav, band, filters, footer, item, plus helpers that `return` values (kind, verdict, confidence, isbn, book-data, book-url, posts-about, about-page, summary, socials) |
 | `plugin.json` | Version, CSS include, settings fields (one-liners only: tagline, Now, email, Bluesky, LinkedIn) |
 | `scripts/retag.ts` | One-off Micropub retag: `plan` writes `retag-plan.json`, `apply` adds categories and verifies |
 
@@ -116,7 +116,8 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] v1.0.7 live (1 Nov): home's recent 3 include news; filter pills hide empty kinds
 - [x] v1.0.8 live (1 Nov): tightened `rw.css` (9-step type scale, 44px tap targets, full-width desktop, one cover per book post, dark focus ring); Recommended and "no note" hidden when empty
 - [x] v1.0.9 live (1 Nov): "rw." favicon replaces micro.blog's photo; unused `404.html` removed; Design → Edit CSS cleared
-- [ ] v1.1.0 pushed (1 Nov): About page structure, homepage summary from it, About in nav, contact block, socials default to Rob's handles (LinkedIn robertjoelwatts, Bluesky robwatts.org, GitHub robertwatts). Rob pastes the new About text first, then taps Update
+- [x] v1.1.0 live (1 Nov): About page structure, About in nav, contact block, socials default to Rob's handles (LinkedIn robertjoelwatts, Bluesky robwatts.org, GitHub robertwatts). Rob rewrote the About copy
+- [ ] v1.1.1 pushed (2 Nov): homepage summary from its own Home page (`/home/`), line breaks kept; loose lists on About tightened. Rob creates Pages → Home (URL `/home/`); until then home keeps About's first paragraph
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`

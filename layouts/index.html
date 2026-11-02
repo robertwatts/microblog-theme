@@ -1,5 +1,6 @@
 {{- $p := site.Params -}}
 {{- $about := partialCached "rw/about-page.html" . "about" -}}
+{{- $summary := partialCached "rw/summary.html" . "summary" -}}
 {{- $posts := (where site.RegularPages "Type" "post").ByDate.Reverse -}}
 {{- $recent := first 3 $posts -}}
 <!doctype html>
@@ -16,9 +17,9 @@
         <p class="tagline">{{ $p.rw_tagline | default "Incrementalist" }}</p>
       </div>
     </div>
-    {{- /* Summary = first paragraph of the About page */}}
+    {{- /* Summary = the Home page, else the About page's first paragraph */}}
     <div class="intro p-note">
-      {{- with $about.lede }}{{ . | safeHTML }}{{ else }}<p>Ten years building Wonderbly, from scrappy startup to Penguin Random House. Now I run tech across a small group of brands, and help early-stage founders skip the mistakes I’ve already made.</p>{{ end -}}
+      {{- with $summary }}{{ . | safeHTML }}{{ else }}<p>Ten years building Wonderbly, from scrappy startup to Penguin Random House. Now I run tech across a small group of brands, and help early-stage founders skip the mistakes I’ve already made.</p>{{ end -}}
     </div>
     {{- with $about.page }}
     <p class="cta"><a class="button" href="{{ .RelPermalink }}">More about me</a></p>
