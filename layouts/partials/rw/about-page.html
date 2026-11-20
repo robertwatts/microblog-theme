@@ -1,16 +1,10 @@
 {{- /* The About page, a micro.blog page Rob edits. Its URL is set here and nowhere else: change $url if Rob moves the page.
-       If it opens with a paragraph (before any heading), that paragraph is the band's lede (and the homepage fallback); the rest is the body.
-       Returns dict url, plus page, lede, body when the page exists. The nav label is the page's own title. */ -}}
+       Its opening paragraph is the band's lede (and the homepage fallback), split off by rw/lede.html.
+       Returns dict url, plus page, lede, body when the page exists. */ -}}
 {{- $url := "/work/" -}}
 {{- $out := dict "url" $url -}}
 {{- range first 1 (where site.RegularPages "RelPermalink" $url) -}}
-  {{- $content := string .Content -}}
-  {{- $lede := "" -}}
-  {{- if hasPrefix (trim $content " \n") "<p>" -}}
-    {{- with findRE `(?s)<p>.*?</p>` $content 1 }}{{ $lede = index . 0 }}{{ end -}}
-  {{- end -}}
-  {{- $body := $content -}}
-  {{- with $lede }}{{ $body = replace $content . "" }}{{ end -}}
-  {{- $out = dict "url" $url "page" . "lede" $lede "body" $body -}}
+  {{- $split := partial "rw/lede.html" .Content -}}
+  {{- $out = dict "url" $url "page" . "lede" $split.lede "body" $split.body -}}
 {{- end -}}
 {{- return $out -}}

@@ -1,0 +1,10 @@
+{{- /* Splits a page's rendered content. A paragraph that opens the page (before any heading, list or shortcode output) is the band's lede; the rest is the body.
+       Context: the content (e.g. .Content). Returns dict lede (the "<p>…</p>", or "") and body. */ -}}
+{{- $content := string . -}}
+{{- $lede := "" -}}
+{{- if hasPrefix (trim $content " \n") "<p>" -}}
+  {{- with findRE `(?s)<p>.*?</p>` $content 1 }}{{ $lede = index . 0 }}{{ end -}}
+{{- end -}}
+{{- $body := $content -}}
+{{- with $lede }}{{ $body = replace $content . "" }}{{ end -}}
+{{- return (dict "lede" $lede "body" $body) -}}

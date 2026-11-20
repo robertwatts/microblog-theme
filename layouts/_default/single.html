@@ -10,8 +10,9 @@
   {{ partial "rw/band.html" (dict "page" . "title" .Title "filters" "") }}
   <main class="wrap stack">{{ .Content }}</main>
 {{- else if eq .RelPermalink "/reading/" }}
-  {{ partial "rw/band.html" (dict "page" . "title" .Title "lede" "Ones I’d press on you, and what I’m reading now.") }}
-  <main class="wrap stack">{{ .Content }}</main>
+  {{- $split := partial "rw/lede.html" .Content }}
+  {{ partial "rw/band.html" (dict "page" . "title" .Title "ledeHTML" $split.lede) }}
+  <main class="wrap stack">{{ $split.body | safeHTML }}</main>
 {{- else if eq .RelPermalink (partialCached "rw/about-page.html" . "about").url }}
   {{- $about := partialCached "rw/about-page.html" . "about" }}
   {{ partial "rw/band.html" (dict "page" . "title" .Title "ledeHTML" $about.lede) }}

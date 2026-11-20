@@ -36,7 +36,7 @@ const robwatts = {
     politics: "only through a tech/business lens",
   },
   books: {
-    page: "/reading/ (micro.blog reserves /books/ for detail pages)",
+    page: "/reading/ (micro.blog reserves /books/ for detail pages); its opening line ('Books worth reading.') is the band's lede",
     order: ["recommended", "reading now", "also read"], // empty sections and missing notes are hidden
     joinKey: "isbn",
   },
@@ -66,7 +66,7 @@ All lowercase; templates match names exactly.
 | --- | --- |
 | `layouts/index.html` | Homepage: name, tagline, the Home page's text and buttons (via `rw/summary.html`), Now, recent posts |
 | `layouts/post/single.html` | Posts (must live here: Tiny's `post/single.html` beats any `_default/single.html`) |
-| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and the About page (`/work/`) get special bands (every band title is the page's own title) (a paragraph before About's first heading becomes its lede); `/home/` redirects to `/` |
+| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and the About page (`/work/`) get special bands (every band title is the page's own title; on Reading and About a paragraph opening the page becomes the band's lede, via `rw/lede.html`); `/home/` redirects to `/` |
 | `layouts/shortcodes/bookgoals.html` | Empty stub so old `{{< bookgoals YEAR >}}` posts still build |
 | `layouts/index.archivehtml.html`, `index.photoshtml.html` | `/archive/` → `/posts/`, `/photos/` → home, via `rw/redirect.html` (meta refresh, canonical, noindex) |
 | `layouts/_default/list.html` | Category pages |
@@ -74,7 +74,7 @@ All lowercase; templates match names exactly.
 | `static/favicon.svg`, `favicon-32.png`, `favicon.ico`, `apple-touch-icon.png` | "rw." on Sunflower yellow, JetBrains Mono Bold as outlines; `rw/head.html` links them |
 | `layouts/shortcodes/rw-posts.html`, `rw-books.html` | Content of the `/posts/` and `/reading/` pages |
 | `layouts/shortcodes/rw-contact.html` | Contact block Rob places in the About page |
-| `layouts/partials/rw/*` | head, nav, band, filters, footer, item, plus helpers that `return` values (kind, verdict, confidence, isbn, book-data, book-url, posts-about, about-page, summary, socials) |
+| `layouts/partials/rw/*` | head, nav, band, filters, footer, item, plus helpers that `return` values (kind, verdict, confidence, isbn, book-data, book-url, posts-about, about-page, lede, summary, socials) |
 | `plugin.json` | Version, CSS include, settings fields (one-liners only: tagline, Now, email, Bluesky, LinkedIn) |
 | `scripts/retag.ts` | One-off Micropub retag: `plan` writes `retag-plan.json`, `apply` adds categories and verifies |
 | `scripts/merge-shelves.ts` | One-off (run 15 Nov): moved every book from the year shelves to "Finished reading" and set each book's date back. `plan` writes `shelves-plan.json` (gitignored; the only record of which year shelf each book was on), `apply` moves, re-dates and checks each book |
@@ -131,6 +131,7 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] v1.1.7 live (2 Nov): About's bullet lists match its numbered ones: same marker column, warm mono em dash instead of 01, 02…
 - [x] Rob (20 Nov): Reading ticked for navigation, Pages ordered Posts, Reading, Work; live nav checked on every page type
 - [ ] v1.1.8 (20 Nov): `/posts/` and `/reading/` bands take the page title (the nav said Reading, the band said Books). Rob may still add `[More about me](/work/)` to the Home page
+- [ ] v1.1.9 (20 Nov): Reading's band lede comes from the page's opening paragraph, like Work's (hardcoded "Ones I'd press on you…" removed); the split lives in `rw/lede.html`
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
