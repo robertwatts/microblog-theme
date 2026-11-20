@@ -7,10 +7,10 @@
 {{ partial "rw/head.html" . }}
 <body>
 {{- if eq .RelPermalink "/posts/" }}
-  {{ partial "rw/band.html" (dict "page" . "title" "Posts" "filters" "") }}
+  {{ partial "rw/band.html" (dict "page" . "title" .Title "filters" "") }}
   <main class="wrap stack">{{ .Content }}</main>
 {{- else if eq .RelPermalink "/reading/" }}
-  {{ partial "rw/band.html" (dict "page" . "title" "Books" "lede" "Ones I’d press on you, and what I’m reading now.") }}
+  {{ partial "rw/band.html" (dict "page" . "title" .Title "lede" "Ones I’d press on you, and what I’m reading now.") }}
   <main class="wrap stack">{{ .Content }}</main>
 {{- else if eq .RelPermalink (partialCached "rw/about-page.html" . "about").url }}
   {{- $about := partialCached "rw/about-page.html" . "about" }}

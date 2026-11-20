@@ -13,7 +13,7 @@ const robwatts = {
     register: "talking at the pub, not on a panel",
     avoid: ["passionate about", "leveraging", "journey", "thought leader"],
   },
-  nav: "Home, then micro.blog's menu (Pages ticked 'Include in navigation', labelled by title); intended: Posts, Books, Work",
+  nav: "Home, then micro.blog's menu (Pages ticked 'Include in navigation', labelled by title); live: Posts, Reading, Work",
   home: {
     summary: "the Home page (/home/, a micro.blog page; a plain return = new line), else a paragraph opening the About page",
     buttons: "from the Home page: a link alone on its own line becomes a button; none in the template",
@@ -66,7 +66,7 @@ All lowercase; templates match names exactly.
 | --- | --- |
 | `layouts/index.html` | Homepage: name, tagline, the Home page's text and buttons (via `rw/summary.html`), Now, recent posts |
 | `layouts/post/single.html` | Posts (must live here: Tiny's `post/single.html` beats any `_default/single.html`) |
-| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and the About page (`/work/`) get special bands (a paragraph before About's first heading becomes its lede); `/home/` redirects to `/` |
+| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and the About page (`/work/`) get special bands (every band title is the page's own title) (a paragraph before About's first heading becomes its lede); `/home/` redirects to `/` |
 | `layouts/shortcodes/bookgoals.html` | Empty stub so old `{{< bookgoals YEAR >}}` posts still build |
 | `layouts/index.archivehtml.html`, `index.photoshtml.html` | `/archive/` → `/posts/`, `/photos/` → home, via `rw/redirect.html` (meta refresh, canonical, noindex) |
 | `layouts/_default/list.html` | Category pages |
@@ -129,7 +129,8 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] v1.1.5 live (2 Nov): nav reads micro.blog's menu (`rw/nav.html`); Home and the current-section highlight stay in the theme, which also skips `/` and `/home/` if they're ticked. After Rob's Pages pass the menu held Home, Work, Posts; Reading wasn't ticked yet. Check the live order
 - [x] v1.1.6 live (2 Nov): contact block's email button becomes a plain first row, and addresses are hidden from crawlers (the Fediverse handle `@rw@robwatts.org` contained the email, so it's hidden too)
 - [x] v1.1.7 live (2 Nov): About's bullet lists match its numbered ones: same marker column, warm mono em dash instead of 01, 02…
-- [ ] Rob (20 Nov check): tick Reading for navigation and order Pages as Posts, Reading, Work (live nav is Home, Work, Posts); add `[More about me](/work/)` to the Home page if wanted (no button live)
+- [x] Rob (20 Nov): Reading ticked for navigation, Pages ordered Posts, Reading, Work; live nav checked on every page type
+- [ ] v1.1.8 (20 Nov): `/posts/` and `/reading/` bands take the page title (the nav said Reading, the band said Books). Rob may still add `[More about me](/work/)` to the Home page
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
