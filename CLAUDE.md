@@ -77,6 +77,7 @@ All lowercase; templates match names exactly.
 | `layouts/partials/rw/*` | head, nav, band, filters, footer, item, plus helpers that `return` values (kind, verdict, confidence, isbn, book-data, book-url, posts-about, about-page, summary, socials) |
 | `plugin.json` | Version, CSS include, settings fields (one-liners only: tagline, Now, email, Bluesky, LinkedIn) |
 | `scripts/retag.ts` | One-off Micropub retag: `plan` writes `retag-plan.json`, `apply` adds categories and verifies |
+| `scripts/merge-shelves.ts` | One-off (run 15 Nov): moved every book from the year shelves to "Finished reading" and set each book's date back. `plan` writes `shelves-plan.json` (gitignored; the only record of which year shelf each book was on), `apply` moves, re-dates and checks each book |
 
 ## micro.blog facts we've verified
 
@@ -84,7 +85,9 @@ All lowercase; templates match names exactly.
 - Deploying = bump `version` in `plugin.json`, push, then Rob taps **Update** on the plug-in.
 - A plug-in is not a custom theme. Design correctly shows "Custom theme: None" while this plug-in renders the site; keep it None. Two leftover custom themes ("robwatts.org", "robwatts.org custom theme") sit in that dropdown unused.
 - Posts have `.Type == "post"`. Pages are separate. Categories are taxonomy `categories`; a term page only exists once a post is in it.
-- Shelf data: `.Site.Data.bookshelves.<shelf name lowercased, no spaces>` with `title`, `author`, `isbn`, `cover_url`. Rob has "Currently reading" plus year shelves like "2024 highlights"; the theme treats every shelf except `currentlyreading` and `wanttoread` as read.
+- Shelf data: `.Site.Data.bookshelves.<shelf name lowercased, no spaces>` with `title`, `author`, `isbn`, `cover_url`. Since 15 Nov all read books sit on "Finished reading" (the year shelves "2021 list", "2022 list", "2023 list", "2024" were merged into it). Other shelves: Currently reading, Want to read, Didn't finish, Kids highlights, Non fiction - want to read. The theme treats every shelf except `currentlyreading` and `wanttoread` as read, so Didn't finish and Kids highlights also land in "Also read".
+- Books API (`https://micro.blog/books/...`, Bearer app token): `GET /books/bookshelves` (`id`, `title`, `_microblog.books_count`, `_microblog.type`), `GET /books/bookshelves/{id}` (books: `id`, `title`, `image`, `authors[]`, `date_published`, `_microblog.isbn`), `POST /books/bookshelves/{id}/assign` `book_id=` keeps the record (and its id), `DELETE /books/bookshelves/{id}/remove/{book_id}`. One book record can sit on two shelves.
+- A book's date is `finished_at`; `date_published` shows it on "finished"-type shelves, else the date added. The JSON API can't set it. The web routes take the same Bearer token: `GET /account/bookshelves/{shelf}/books/{book}/edit` (form fields `title`, `author`, `isbn`, `cover_url`, `finished_at` as `YYYY-MM-DD HH:MM`; the date field only exists on finished-type shelves), `POST .../save` with all of them sets it. Moving a book in the web UI re-adds it by ISBN as a new record dated now. Deleting a shelf in the UI deletes its books too.
 - Book detail pages: Bookshelves → Settings → "Link books to detail pages on your blog". Template is `layouts/book/single.html` with params `isbn`, `title`, `author`, `cover_url`, `background_color`, `description`, `shelves[]{name,type}`, `finished_at`. Pages only exist for books linked from posts, so links use `rw/book-url.html` to fall back to micro.blog's page. Book posts also carry micro.blog's own `img.microblog_book` cover in the body; `rw.css` hides it wherever our book row already shows one.
 - Design → Edit CSS (`custom.css`) loads before `rw.css` on every page. Rob cleared it on 1 Nov; its Tiny leftovers (`body { max-width: 55em }`, a boxed `footer`) had squeezed desktop to 935px. Keep it empty; `rw.css` still sets `body { max-width: none }` as a guard.
 - micro.blog's `microblog_head.html` links `micro.blog/{username}/favicon.png`, which for Rob is an old black-and-white photo, not his current avatar. `rw/head.html` strips that link with `replaceRE` (so the rest of micro.blog's head stays current) and adds ours.
@@ -95,8 +98,8 @@ All lowercase; templates match names exactly.
 - The base theme (Tiny Theme) is a theme plug-in with no Uninstall. A blog always has exactly one; installing another theme from Plug-ins replaces it, and Blank is no longer selectable. Any type- or output-specific template in the base theme beats our `_default/*`, so the plug-in must override those too. `/archive/` and `/photos/` are the home page's ArchiveHTML/PhotosHTML outputs; ours (`index.archivehtml.html`, `index.photoshtml.html`) beat the base theme's and redirect.
 - Micropub: `https://micro.blog/micropub`, Bearer app token. `q=source` lists posts; `q=category` lists categories; categories can be created via `mp-channel=categories`. Updates: `action: update` with `add: {category}` returns 200 but does nothing; `replace: {category: [...]}` works and leaves other properties alone, so send the full merged list. Paging with `limit`/`offset` on `q=source` is not confirmed.
 - No API for blog settings; those are manual.
-- Changing a page's URL leaves the old URL serving its last build: after Rob moved About to `/work/`, `/about/` still returned 200 with stale markup (2 Nov). Nothing redirects it.
-- Pages ticked "Include in navigation" get `menu: main` and land in `site.Menus.main` (Tiny's header loops over it; Blank's sitemap lists them, which is how to see the menu from outside). On 2 Nov it held micro.blog's defaults: Work, Articles, Archive, Photos, Replies, Home; Posts and Reading weren't ticked. Untested: whether reordering on the Pages screen sets a menu weight. Without one, Hugo sorts the menu alphabetically.
+- Changing a page's URL leaves the old URL serving its last build: after Rob moved About to `/work/`, `/about/` still returned 200 with stale markup (2 Nov), and by 20 Nov it was a 404. Nothing redirects it.
+- Pages ticked "Include in navigation" get `menu: main` and land in `site.Menus.main` (Tiny's header loops over it; Blank's sitemap lists them, which is how to see the menu from outside). On 2 Nov it held micro.blog's defaults: Work, Articles, Archive, Photos, Replies, Home; Posts and Reading weren't ticked. Without a weight Hugo sorts the menu alphabetically, but on 20 Nov it rendered Work before Posts, so micro.blog does pass an order through.
 
 ## Testing
 
@@ -121,13 +124,17 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] v1.1.0 live (1 Nov): About page structure, About in nav, contact block, socials default to Rob's handles (LinkedIn robertjoelwatts, Bluesky robwatts.org, GitHub robertwatts). Rob rewrote the About copy
 - [x] v1.1.1 live (2 Nov): homepage summary from its own Home page (`/home/`), line breaks kept; loose lists on About tightened. Rob made Pages → Home (`/home/`)
 - [x] v1.1.2 live (2 Nov): About lede only taken from a paragraph before the first heading (Rob's About now opens with "Day job", which had lost its paragraph to the band)
-- [ ] v1.1.3 pushed (2 Nov): "More about me" removed from the template; a link alone on its own line in the Home page renders as a button (Rob adds `[More about me](/about/)` there)
-- [ ] v1.1.4 (2 Nov): Rob moved About to `/work/` and titled it Work, which broke the nav and the page's layout (both matched `/about/`). The URL now lives only in `rw/about-page.html`; the nav label is the page title. Rob: point the Home page button at `/work/`
-- [ ] v1.1.5 (2 Nov): nav reads micro.blog's menu (`rw/nav.html`); Home and the current-section highlight stay in the theme, which also skips `/` and `/home/` if they're ticked. After Rob's Pages pass the menu held Home, Work, Posts; Reading wasn't ticked yet. Check the live order
-- [ ] v1.1.6 (2 Nov): contact block's email button becomes a plain first row, and addresses are hidden from crawlers (the Fediverse handle `@rw@robwatts.org` contained the email, so it's hidden too)
-- [ ] v1.1.7 (2 Nov): About's bullet lists match its numbered ones: same marker column, warm mono em dash instead of 01, 02…
+- [x] v1.1.3 live (2 Nov): "More about me" removed from the template; a link alone on its own line in the Home page renders as a button (Rob adds `[More about me](/about/)` there)
+- [x] v1.1.4 live (2 Nov): Rob moved About to `/work/` and titled it Work, which broke the nav and the page's layout (both matched `/about/`). The URL now lives only in `rw/about-page.html`; the nav label is the page title. Rob: point the Home page button at `/work/`
+- [x] v1.1.5 live (2 Nov): nav reads micro.blog's menu (`rw/nav.html`); Home and the current-section highlight stay in the theme, which also skips `/` and `/home/` if they're ticked. After Rob's Pages pass the menu held Home, Work, Posts; Reading wasn't ticked yet. Check the live order
+- [x] v1.1.6 live (2 Nov): contact block's email button becomes a plain first row, and addresses are hidden from crawlers (the Fediverse handle `@rw@robwatts.org` contained the email, so it's hidden too)
+- [x] v1.1.7 live (2 Nov): About's bullet lists match its numbered ones: same marker column, warm mono em dash instead of 01, 02…
+- [ ] Rob (20 Nov check): tick Reading for navigation and order Pages as Posts, Reading, Work (live nav is Home, Work, Posts); add `[More about me](/work/)` to the Home page if wanted (no button live)
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
 - [ ] First `book` + `recommend` post so "Recommended" isn't empty
+- [x] Year shelves merged into "Finished reading" (15 Nov): 47 books moved, dates kept and verified; "Finished reading" has 54
+- [ ] Rob: delete the four empty year shelves; revoke the app token used for the merge; check `/reading/` "Also read"
+- [ ] Dates to fix: 7 books Rob moved by hand on 15 Nov (Termush, Bonfire of the Vanities, Mayflies, Time Shelter, Lessons, Tokyo Express, Clear Thinking) and Nero and The Iliad (reset 1 Nov) show 2026 dates
 - [ ] Rob to refine the About page copy himself (micro.blog → Pages → About)

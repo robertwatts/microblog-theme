@@ -1,10 +1,16 @@
 {
-  "name": "robwatts-retag",
+  "name": "robwatts-scripts",
   "private": true,
   "type": "module",
   "scripts": {
     "plan": "tsx retag.ts plan",
-    "apply": "tsx retag.ts apply"
+    "apply": "tsx retag.ts apply",
+    "shelves:plan": "tsx merge-shelves.ts plan",
+    "shelves:apply": "tsx merge-shelves.ts apply"
   },
-  "devDependencies": { "tsx": "^4.19.0", "typescript": "^5.6.0", "@types/node": "^22.7.0" }
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.7.0"
+  }
 }
