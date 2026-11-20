@@ -130,8 +130,8 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] v1.1.6 live (2 Nov): contact block's email button becomes a plain first row, and addresses are hidden from crawlers (the Fediverse handle `@rw@robwatts.org` contained the email, so it's hidden too)
 - [x] v1.1.7 live (2 Nov): About's bullet lists match its numbered ones: same marker column, warm mono em dash instead of 01, 02…
 - [x] Rob (20 Nov): Reading ticked for navigation, Pages ordered Posts, Reading, Work; live nav checked on every page type
-- [ ] v1.1.8 (20 Nov): `/posts/` and `/reading/` bands take the page title (the nav said Reading, the band said Books). Rob may still add `[More about me](/work/)` to the Home page
-- [ ] v1.1.9 (20 Nov): Reading's band lede comes from the page's opening paragraph, like Work's (hardcoded "Ones I'd press on you…" removed); the split lives in `rw/lede.html`
+- [x] v1.1.8 live (20 Nov): `/posts/` and `/reading/` bands take the page title (the nav said Reading, the band said Books). Rob may still add `[More about me](/work/)` to the Home page
+- [x] v1.1.9 live (20 Nov): Reading's band lede comes from the page's opening paragraph, like Work's (hardcoded "Ones I'd press on you…" removed); the split lives in `rw/lede.html`
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
