@@ -26,7 +26,8 @@
       {{- end }}
       {{- with .Title }}<h1 class="post-title p-name">{{ . }}</h1>{{ end }}
       <div class="prose e-content">{{ .Content }}</div>
-      {{ partial "microblog_syndication.html" . }}
+      {{- /* micro.blog's partial meant to comment out a "Reply on Bluesky" link but wrote "<! --", which shows as text: drop it */}}
+      {{ partial "microblog_syndication.html" . | replaceRE `(?s)(?:&lt;|<)!\s*--.*?--(?:&gt;|>)` "" | safeHTML }}
     </article>
     <p><a class="more" href="{{ "/posts/" | relURL }}">All posts</a></p>
   </main>
