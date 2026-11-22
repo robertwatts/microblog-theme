@@ -1,0 +1,4 @@
+{{- /* {{< rw-books-with-notes >}}: read books Rob has written about (a post links the book and says something after micro.blog's
+       "… by Author 📚" line), newest first, each with that take; recommended ones are marked; each links to the book's page.
+       Rob writes the heading and any copy around it in the page. */ -}}
+{{- partial "rw/books-noted.html" (partialCached "rw/books-data.html" . "books-data") -}}

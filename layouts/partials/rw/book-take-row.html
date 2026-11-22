@@ -1,6 +1,7 @@
-{{- /* context: dict "book" (shelf entry) "take" (from rw/book-takes.html, or nil). Cover, title, author and what Rob said; links to that post, else to the book */ -}}
+{{- /* context: dict "book" (shelf entry) "take" (from rw/book-takes.html, or nil) "recommended" (bool).
+       Cover, title, author and what Rob said; links to the book's page (rw/book-url.html: the blog's /books/{isbn}/, else micro.blog's) */ -}}
 {{- $isbn := string .book.isbn }}
-<a class="book-row" href="{{ with .take }}{{ .post.RelPermalink }}{{ else }}{{ partial "rw/book-url.html" $isbn }}{{ end }}">
+<a class="book-row" href="{{ partial "rw/book-url.html" $isbn }}">
   {{ with .book.cover_url }}<img class="cover" src="{{ . }}" alt="" width="64" height="96" loading="lazy">{{ end }}
-  <span><span class="book-title">{{ .book.title }}</span><span class="book-author">{{ .book.author }}</span>{{ with .take }}<span class="book-why">{{ .take }}</span>{{ end }}</span>
+  <span>{{ if .recommended }}<span class="book-verdict">Recommended</span>{{ end }}<span class="book-title">{{ .book.title }}</span><span class="book-author">{{ .book.author }}</span>{{ with .take }}<span class="book-why">{{ .take }}</span>{{ end }}</span>
 </a>

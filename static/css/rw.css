@@ -175,7 +175,10 @@ main.wrap { padding-block: var(--s-5) var(--s-6); }
 
 /* Shared bits */
 
-.section-title { margin: 0; font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; letter-spacing: 0.06em; color: var(--warm); }
+.section-title, .books-page > h2 { margin: 0; font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; letter-spacing: 0.06em; color: var(--warm); }
+/* Book pages: Rob's markdown headings sit close to the shortcode under them; his paragraphs take the stack's spacing only */
+.stack.books-page > h2 + * { margin-top: var(--s-4); }
+.books-page > p { margin-bottom: 0; }
 .muted { color: var(--muted); }
 .more {
   display: inline-flex; align-items: center; min-height: var(--tap);
@@ -253,6 +256,7 @@ mark { background: var(--soft); color: inherit; padding: 0.05em 0.2em; border-ra
 .book-row--big .cover { width: 72px; }
 .book-title { display: block; font-weight: 600; font-size: var(--fs-3); line-height: 1.25; }
 .book-author { display: block; font-style: italic; font-size: var(--fs-1); color: var(--sec); }
+.book-verdict { display: block; margin-bottom: 0.15rem; font-family: var(--mono); font-size: var(--fs-0); font-weight: 700; letter-spacing: 0.03em; color: var(--warm); }
 .book-why { display: block; margin-top: var(--s-1); font-size: var(--fs-2); line-height: 1.45; color: var(--ink); }
 a.book-row:hover .book-title { text-decoration: underline; }
 

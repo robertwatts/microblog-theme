@@ -1,0 +1,11 @@
+{{- /* Covers from the "Currently reading" shelf, or nothing. Used by {{< rw-books-reading-now >}} and the old {{< rw-books >}} */ -}}
+{{- with site.Data.bookshelves.currentlyreading }}
+<div class="shelf">
+  {{- range . }}
+  <a class="shelf-book" href="{{ partial "rw/book-url.html" .isbn }}">
+    {{ with .cover_url }}<img class="cover" src="{{ . }}" alt="" width="96" height="144" loading="lazy">{{ end }}
+    <span class="book-title">{{ .title }}</span><span class="book-author">{{ .author }}</span>
+  </a>
+  {{- end }}
+</div>
+{{- end -}}

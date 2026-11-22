@@ -1,0 +1,38 @@
+{{- /* Everything the book shortcodes need, worked out once (call with partialCached … "books-data").
+       Read shelves: all but currently reading and any want-to-read shelf; known shelves first, in $order; a book on two shelves counts once, under the first.
+       Returns dict:
+         shelves   read shelf keys, in display order
+         labels    shelf key → heading
+         verdicts  isbn → verdict from book posts' categories
+         takes     isbn → dict post, take, date (rw/book-takes.html)
+         noted     read books with a take, newest take first: dict book, take, recommended
+         rest      read books without one: dict book, shelf */ -}}
+{{- $takes := partialCached "rw/book-takes.html" . "book-takes" -}}
+{{- $verdicts := dict -}}
+{{- range (where (where site.RegularPages "Type" "post") "Params.categories" "intersect" (slice "book")).ByDate -}}
+  {{- $post := . -}}
+  {{- with partial "rw/isbn.html" $post }}{{ $verdicts = merge $verdicts (dict . (partial "rw/verdict.html" $post)) }}{{ end -}}
+{{- end -}}
+{{- $labels := dict "finishedreading" "Finished" "kidshighlights" "With the kids" "didntfinish" "Didn’t finish" -}}
+{{- $shelves := slice -}}
+{{- range slice "finishedreading" "kidshighlights" "didntfinish" }}{{ if isset site.Data.bookshelves . }}{{ $shelves = $shelves | append . }}{{ end }}{{ end -}}
+{{- range $name, $books := site.Data.bookshelves -}}
+  {{- if not (or (in $shelves $name) (eq $name "currentlyreading") (in $name "wanttoread")) }}{{ $shelves = $shelves | append $name }}{{ end -}}
+{{- end -}}
+{{- $noted := slice -}}{{ $rest := slice -}}
+{{- $seen := dict -}}
+{{- range $shelf := $shelves -}}
+  {{- range index site.Data.bookshelves $shelf -}}
+    {{- $book := . -}}
+    {{- $isbn := string $book.isbn -}}
+    {{- if not (isset $seen $isbn) -}}
+      {{- $seen = merge $seen (dict $isbn true) -}}
+      {{- with index $takes $isbn -}}
+        {{- $noted = $noted | append (dict "book" $book "take" . "date" .date "recommended" (eq (index $verdicts $isbn) "recommend")) -}}
+      {{- else -}}
+        {{- $rest = $rest | append (dict "book" $book "shelf" $shelf) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return (dict "shelves" $shelves "labels" $labels "verdicts" $verdicts "takes" $takes "noted" (sort $noted "date" "desc") "rest" $rest) -}}

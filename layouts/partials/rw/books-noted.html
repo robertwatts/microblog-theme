@@ -1,0 +1,7 @@
+{{- /* context: rw/books-data.html's dict. Rows for the read books Rob has written about, newest first, or nothing.
+       Used by {{< rw-books-with-notes >}} and the old {{< rw-books >}} */ -}}
+{{- with .noted }}
+<div class="stack-s">
+  {{- range . }}{{ partial "rw/book-take-row.html" . }}{{ end }}
+</div>
+{{- end -}}

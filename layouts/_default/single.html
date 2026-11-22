@@ -9,10 +9,10 @@
 {{- if eq .RelPermalink "/posts/" }}
   {{ partial "rw/band.html" (dict "page" . "title" .Title "filters" "") }}
   <main class="wrap stack">{{ .Content }}</main>
-{{- else if in .RawContent "rw-books" }}{{/* /reading/ and the page of the rest */}}
+{{- else if in .RawContent "rw-books" }}{{/* /reading/ and the page of the rest: Rob's headings and copy around the book shortcodes */}}
   {{- $split := partial "rw/lede.html" .Content }}
   {{ partial "rw/band.html" (dict "page" . "title" .Title "ledeHTML" $split.lede) }}
-  <main class="wrap stack">{{ $split.body | safeHTML }}</main>
+  <main class="wrap stack books-page">{{ $split.body | safeHTML }}</main>
 {{- else if eq .RelPermalink (partialCached "rw/about-page.html" . "about").url }}
   {{- $about := partialCached "rw/about-page.html" . "about" }}
   {{ partial "rw/band.html" (dict "page" . "title" .Title "ledeHTML" $about.lede) }}
