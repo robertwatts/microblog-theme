@@ -135,8 +135,9 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] Rob (20 Nov): Reading ticked for navigation, Pages ordered Posts, Reading, Work; live nav checked on every page type
 - [x] v1.1.8 live (20 Nov): `/posts/` and `/reading/` bands take the page title (the nav said Reading, the band said Books). Rob may still add `[More about me](/work/)` to the Home page
 - [x] v1.1.9 live (20 Nov): Reading's band lede comes from the page's opening paragraph, like Work's (hardcoded "Ones I'd press on you…" removed); the split lives in `rw/lede.html`
-- [ ] v1.2.0 (22 Nov): `/reading/` shows Recommended, Reading now and "What I thought" (read books with a take, newest first); the rest move to a page with `{{< rw-books "rest" >}}`, grouped by shelf. Rob: create that page (e.g. "Also read" at `/also-read/`, opening line then the shortcode); leave it out of navigation
-- [ ] v1.2.1 (22 Nov): posts cross-posted to Bluesky no longer show "<! -- Reply on Bluesky -->" as text (a typo in Blank's `microblog_syndication.html`; `post/single.html` strips it from the partial's output)
+- [x] v1.2.0 live (22 Nov): `/reading/` shows Recommended, Reading now and "What I thought" (22 read books with a take, newest first); the rest (57) are on Rob's "Also read" page (`/also-read/`, `{{< rw-books "rest" >}}`): Finished 37, With the kids 16, Didn't finish 4
+- [ ] Rob: untick "Also read" from navigation (it's ticked, so on `/also-read/` both Reading and Also read light up), or ask for the double highlight to be handled; fix Babel's author ("R") in Bookshelves
+- [x] v1.2.1 live (22 Nov): posts cross-posted to Bluesky no longer show "<! -- Reply on Bluesky -->" as text (a typo in Blank's `microblog_syndication.html`; `post/single.html` strips it from the partial's output)
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`
