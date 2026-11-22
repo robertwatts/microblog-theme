@@ -37,7 +37,9 @@ const robwatts = {
   },
   books: {
     page: "/reading/ (micro.blog reserves /books/ for detail pages); its opening line ('Books worth reading.') is the band's lede",
-    order: ["recommended", "reading now", "also read"], // empty sections and missing notes are hidden
+    order: ["recommended", "reading now", "what I thought"], // empty sections are hidden
+    writtenAbout: "a post links the book and says something after micro.blog's '… by Author 📚' line (rw/book-takes.html); the row shows that take and links the post",
+    rest: "every other read book, by shelf (Finished, With the kids, Didn't finish), on a page Rob makes with {{< rw-books \"rest\" >}}; /reading/ links it by that page's title with a count",
     joinKey: "isbn",
   },
   distribution: { canonical: "robwatts.org", crossPost: ["bluesky", "fediverse"], substack: false },
@@ -66,15 +68,15 @@ All lowercase; templates match names exactly.
 | --- | --- |
 | `layouts/index.html` | Homepage: name, tagline, the Home page's text and buttons (via `rw/summary.html`), Now, recent posts |
 | `layouts/post/single.html` | Posts (must live here: Tiny's `post/single.html` beats any `_default/single.html`) |
-| `layouts/_default/single.html` | Pages; `/posts/`, `/reading/` and the About page (`/work/`) get special bands (every band title is the page's own title; on Reading and About a paragraph opening the page becomes the band's lede, via `rw/lede.html`); `/home/` redirects to `/` |
+| `layouts/_default/single.html` | Pages; `/posts/`, pages using `rw-books` (`/reading/` and the rest page) and the About page (`/work/`) get special bands (every band title is the page's own title; on Reading and About a paragraph opening the page becomes the band's lede, via `rw/lede.html`); `/home/` redirects to `/` |
 | `layouts/shortcodes/bookgoals.html` | Empty stub so old `{{< bookgoals YEAR >}}` posts still build |
 | `layouts/index.archivehtml.html`, `index.photoshtml.html` | `/archive/` → `/posts/`, `/photos/` → home, via `rw/redirect.html` (meta refresh, canonical, noindex) |
 | `layouts/_default/list.html` | Category pages |
 | `layouts/book/single.html` | `/books/{isbn}/` detail pages, overriding micro.blog's |
 | `static/favicon.svg`, `favicon-32.png`, `favicon.ico`, `apple-touch-icon.png` | "rw." on Sunflower yellow, JetBrains Mono Bold as outlines; `rw/head.html` links them |
-| `layouts/shortcodes/rw-posts.html`, `rw-books.html` | Content of the `/posts/` and `/reading/` pages |
+| `layouts/shortcodes/rw-posts.html`, `rw-books.html` | Content of the `/posts/` and `/reading/` pages; `{{< rw-books "rest" >}}` fills the page of the other read books |
 | `layouts/shortcodes/rw-contact.html` | Contact block Rob places in the About page |
-| `layouts/partials/rw/*` | head, nav, band, filters, footer, item, plus helpers that `return` values (kind, verdict, confidence, isbn, book-data, book-url, posts-about, about-page, lede, summary, socials) |
+| `layouts/partials/rw/*` | head, nav, band, filters, footer, item, plus helpers that `return` values (kind, verdict, confidence, isbn, book-data, book-url, posts-about, book-takes, book-take-row, about-page, lede, summary, socials) |
 | `plugin.json` | Version, CSS include, settings fields (one-liners only: tagline, Now, email, Bluesky, LinkedIn) |
 | `scripts/retag.ts` | One-off Micropub retag: `plan` writes `retag-plan.json`, `apply` adds categories and verifies |
 | `scripts/merge-shelves.ts` | One-off (run 15 Nov): moved every book from the year shelves to "Finished reading" and set each book's date back. `plan` writes `shelves-plan.json` (gitignored; the only record of which year shelf each book was on), `apply` moves, re-dates and checks each book |
@@ -85,7 +87,7 @@ All lowercase; templates match names exactly.
 - Deploying = bump `version` in `plugin.json`, push, then Rob taps **Update** on the plug-in.
 - A plug-in is not a custom theme. Design correctly shows "Custom theme: None" while this plug-in renders the site; keep it None. Two leftover custom themes ("robwatts.org", "robwatts.org custom theme") sit in that dropdown unused.
 - Posts have `.Type == "post"`. Pages are separate. Categories are taxonomy `categories`; a term page only exists once a post is in it.
-- Shelf data: `.Site.Data.bookshelves.<shelf name lowercased, no spaces>` with `title`, `author`, `isbn`, `cover_url`. Since 15 Nov all read books sit on "Finished reading" (the year shelves "2021 list", "2022 list", "2023 list", "2024" were merged into it). Other shelves: Currently reading, Want to read, Didn't finish, Kids highlights, Non fiction - want to read. The theme treats every shelf except `currentlyreading` and `wanttoread` as read, so Didn't finish and Kids highlights also land in "Also read".
+- Shelf data: `.Site.Data.bookshelves.<shelf name lowercased, no spaces>` with `title`, `author`, `isbn`, `cover_url`. Since 15 Nov all read books sit on "Finished reading" (the year shelves "2021 list", "2022 list", "2023 list", "2024" were merged into it). Other shelves: Currently reading, Want to read, Didn't finish, Kids highlights, Non fiction - want to read. Read = every shelf except `currentlyreading` and any whose key contains `wanttoread` (since 1.2.0, so "Non fiction - want to read" no longer counts as read); a book on two read shelves shows once, under the first of Finished reading, Kids highlights, Didn't finish.
 - Books API (`https://micro.blog/books/...`, Bearer app token): `GET /books/bookshelves` (`id`, `title`, `_microblog.books_count`, `_microblog.type`), `GET /books/bookshelves/{id}` (books: `id`, `title`, `image`, `authors[]`, `date_published`, `_microblog.isbn`), `POST /books/bookshelves/{id}/assign` `book_id=` keeps the record (and its id), `DELETE /books/bookshelves/{id}/remove/{book_id}`. One book record can sit on two shelves.
 - A book's date is `finished_at`; `date_published` shows it on "finished"-type shelves, else the date added. The JSON API can't set it. The web routes take the same Bearer token: `GET /account/bookshelves/{shelf}/books/{book}/edit` (form fields `title`, `author`, `isbn`, `cover_url`, `finished_at` as `YYYY-MM-DD HH:MM`; the date field only exists on finished-type shelves), `POST .../save` with all of them sets it. Moving a book in the web UI re-adds it by ISBN as a new record dated now. Deleting a shelf in the UI deletes its books too.
 - Book detail pages: Bookshelves → Settings → "Link books to detail pages on your blog". Template is `layouts/book/single.html` with params `isbn`, `title`, `author`, `cover_url`, `background_color`, `description`, `shelves[]{name,type}`, `finished_at`. Pages only exist for books linked from posts, so links use `rw/book-url.html` to fall back to micro.blog's page. Book posts also carry micro.blog's own `img.microblog_book` cover in the body; `rw.css` hides it wherever our book row already shows one.
@@ -132,6 +134,7 @@ Build locally against a stand-in before pushing: Hugo 0.91 (what the blog is set
 - [x] Rob (20 Nov): Reading ticked for navigation, Pages ordered Posts, Reading, Work; live nav checked on every page type
 - [x] v1.1.8 live (20 Nov): `/posts/` and `/reading/` bands take the page title (the nav said Reading, the band said Books). Rob may still add `[More about me](/work/)` to the Home page
 - [x] v1.1.9 live (20 Nov): Reading's band lede comes from the page's opening paragraph, like Work's (hardcoded "Ones I'd press on you…" removed); the split lives in `rw/lede.html`
+- [ ] v1.2.0 (22 Nov): `/reading/` shows Recommended, Reading now and "What I thought" (read books with a take, newest first); the rest move to a page with `{{< rw-books "rest" >}}`, grouped by shelf. Rob: create that page (e.g. "Also read" at `/also-read/`, opening line then the shortcode); leave it out of navigation
 - [ ] Rob: fill the Now setting; revoke the Micropub token used for the retag
 - [x] Retag old posts: DeepSeek → news (then note, at Rob's call); Buffett, Acorn/ARM, boring tech → note (1 Nov)
 - [x] Rest of the retag (1 Nov): old "Books" → `book` (13 posts); 5 more → note, 5 long 2021 posts → essay; two photo posts left untagged. "Books" is now empty; "Articles" (5) stays alongside `essay`

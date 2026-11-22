@@ -1,47 +1,70 @@
-{{- /* Put {{< rw-books >}} on a page at /reading/ (micro.blog reserves /books/ for book detail pages) */ -}}
-{{- $bookPosts := where (where site.RegularPages "Type" "post") "Params.categories" "intersect" (slice "book") -}}
-{{- $verdicts := dict -}}
-{{- $why := dict -}}
-{{- range $bookPosts.ByDate -}}
-  {{- $post := . -}}
-  {{- $isbn := partial "rw/isbn.html" $post -}}
-  {{- if $isbn -}}
-    {{- $verdicts = merge $verdicts (dict $isbn (partial "rw/verdict.html" $post)) -}}
-    {{- $why = merge $why (dict $isbn ($post.Summary | plainify | truncate 140)) -}}
-  {{- end -}}
-{{- end -}}
-{{- /* Finished = every shelf except currently reading and want to read, de-duplicated */ -}}
-{{- $finished := slice -}}
-{{- $seen := dict -}}
-{{- range $name, $books := site.Data.bookshelves -}}
-  {{- if not (in (slice "currentlyreading" "wanttoread") $name) -}}
-    {{- range $books -}}
-      {{- $k := string .isbn -}}
-      {{- if not (isset $seen $k) -}}{{- $finished = $finished | append . -}}{{- $seen = merge $seen (dict $k true) -}}{{- end -}}
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
-{{- $reading := site.Data.bookshelves.currentlyreading | default slice -}}
+{{- /* {{< rw-books >}} on /reading/: Recommended, Reading now, and the read books Rob has written about ("What I thought"),
+       then a link to the page holding {{< rw-books "rest" >}}: every other read book, by shelf.
+       (/reading/ because micro.blog reserves /books/ for book detail pages.) */ -}}
+{{- $mode := .Get 0 | default "" -}}
+{{- $takes := partialCached "rw/book-takes.html" . "book-takes" -}}
 
-{{- $recommended := slice -}}
-{{- range $finished -}}
-  {{- if eq (index $verdicts (string .isbn)) "recommend" }}{{ $recommended = $recommended | append . }}{{ end -}}
+{{- /* Verdicts come from book posts' categories */ -}}
+{{- $verdicts := dict -}}
+{{- range (where (where site.RegularPages "Type" "post") "Params.categories" "intersect" (slice "book")).ByDate -}}
+  {{- $post := . -}}
+  {{- with partial "rw/isbn.html" $post }}{{ $verdicts = merge $verdicts (dict . (partial "rw/verdict.html" $post)) }}{{ end -}}
 {{- end -}}
+
+{{- /* Read shelves: all but currently reading and any want-to-read shelf. Known shelves first, in this order, with these labels;
+       a book on two shelves shows once, under the first. */ -}}
+{{- $labels := dict "finishedreading" "Finished" "kidshighlights" "With the kids" "didntfinish" "Didn’t finish" -}}
+{{- $shelves := slice -}}
+{{- range slice "finishedreading" "kidshighlights" "didntfinish" }}{{ if isset site.Data.bookshelves . }}{{ $shelves = $shelves | append . }}{{ end }}{{ end -}}
+{{- range $name, $books := site.Data.bookshelves -}}
+  {{- if not (or (in $shelves $name) (eq $name "currentlyreading") (in $name "wanttoread")) }}{{ $shelves = $shelves | append $name }}{{ end -}}
+{{- end -}}
+{{- $read := slice -}}{{/* dict book, shelf */}}
+{{- $seen := dict -}}
+{{- range $shelf := $shelves -}}
+  {{- range index site.Data.bookshelves $shelf -}}
+    {{- $k := string .isbn -}}
+    {{- if not (isset $seen $k) }}{{ $read = $read | append (dict "book" . "shelf" $shelf) }}{{ $seen = merge $seen (dict $k true) }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Split: recommended, written about (has a take), the rest */ -}}
+{{- $recommended := slice -}}{{ $thought := slice -}}{{ $rest := slice -}}
+{{- range $read -}}
+  {{- $isbn := string .book.isbn -}}
+  {{- $take := index $takes $isbn -}}
+  {{- if eq (index $verdicts $isbn) "recommend" }}{{ $recommended = $recommended | append (dict "book" .book "take" $take) -}}
+  {{- else if $take }}{{ $thought = $thought | append (dict "book" .book "take" $take "date" $take.date) -}}
+  {{- else }}{{ $rest = $rest | append . }}{{ end -}}
+{{- end -}}
+
+{{- if eq $mode "rest" -}}
+
+{{- range $shelf := $shelves }}
+  {{- $books := where $rest "shelf" $shelf }}
+  {{- with $books }}
+<section aria-labelledby="shelf-{{ $shelf }}">
+  <h2 class="section-title" id="shelf-{{ $shelf }}">{{ index $labels $shelf | default (humanize $shelf) }}</h2>
+  <ul class="log">
+    {{- range . }}
+      {{- $isbn := string .book.isbn }}
+    <li><a href="{{ partial "rw/book-url.html" $isbn }}"><span class="book-title">{{ .book.title }}</span> <span class="book-author">{{ .book.author }}</span></a>{{ with index $verdicts $isbn }}<span class="log-verdict">{{ . }}</span>{{ end }}</li>
+    {{- end }}
+  </ul>
+</section>
+  {{- end }}
+{{- end }}
+
+{{- else -}}
 
 {{- with $recommended }}{{/* hidden until the first recommend post */}}
 <section class="stack-s" aria-labelledby="recommended">
   <h2 class="section-title" id="recommended">Recommended</h2>
-  {{- range . }}
-    {{- $isbn := string .isbn }}
-  <a class="book-row book-row--big" href="{{ partial "rw/book-url.html" $isbn }}">
-    {{ with .cover_url }}<img class="cover" src="{{ . }}" alt="" width="72" height="108" loading="lazy">{{ end }}
-    <span><span class="book-title">{{ .title }}</span><span class="book-author">{{ .author }}</span><span class="book-why">{{ index $why $isbn }}</span></span>
-  </a>
-  {{- end }}
+  {{- range . }}{{ partial "rw/book-take-row.html" . }}{{ end }}
 </section>
 {{- end }}
 
-{{- with $reading }}
+{{- with site.Data.bookshelves.currentlyreading }}
 <section class="stack-s" aria-labelledby="reading">
   <h2 class="section-title" id="reading">Reading now</h2>
   <div class="shelf">
@@ -55,14 +78,21 @@
 </section>
 {{- end }}
 
-<section aria-labelledby="also">
-  <h2 class="section-title" id="also">Also read</h2>
-  <ul class="log">
-    {{- range $finished }}
-      {{- $isbn := string .isbn }}{{ $v := index $verdicts $isbn }}
-      {{- if ne $v "recommend" }}
-    <li><a href="{{ partial "rw/book-url.html" $isbn }}"><span class="book-title">{{ .title }}</span> <span class="book-author">{{ .author }}</span></a>{{ with $v }}<span class="log-verdict">{{ . }}</span>{{ end }}</li>
-      {{- end }}
-    {{- end }}
-  </ul>
+{{- with $thought }}
+<section class="stack-s" aria-labelledby="thought">
+  <h2 class="section-title" id="thought">What I thought</h2>
+  {{- range sort . "date" "desc" }}{{ partial "rw/book-take-row.html" . }}{{ end }}
 </section>
+{{- end }}
+
+{{- /* The page holding {{< rw-books "rest" >}}, linked by its own title */ -}}
+{{- with $rest }}
+  {{- $count := len . }}
+  {{- range site.RegularPages }}
+    {{- if and (ne .Type "post") (findRE `rw-books\s+"?rest` .RawContent) }}
+<p><a class="more" href="{{ .RelPermalink }}">{{ .Title }} ({{ $count }})</a></p>
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- end -}}

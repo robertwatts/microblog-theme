@@ -1,9 +1,9 @@
 {{- /* Home, then micro.blog's navigation: the pages ticked "Include in navigation", in micro.blog's order, labelled by their titles.
-       A page that is a link (redirect_url) goes straight there. Posts also lights up on posts and category pages, Books on book pages. */ -}}
+       A page that is a link (redirect_url) goes straight there. Posts also lights up on posts and category pages, Reading on book pages and any page using rw-books. */ -}}
 {{- $here := .RelPermalink -}}
 {{- $section := "" -}}
 {{- if or (hasPrefix $here "/categories/") (eq .Type "post") }}{{ $section = "/posts/" }}{{ end -}}
-{{- if or (hasPrefix $here "/books/") (eq .Type "book") }}{{ $section = "/reading/" }}{{ end -}}
+{{- if or (hasPrefix $here "/books/") (eq .Type "book") (and (ne .Type "post") (in .RawContent "rw-books")) }}{{ $section = "/reading/" }}{{ end -}}
 <nav class="nav" aria-label="Main">
   <a class="nav-home" href="{{ "/" | relURL }}">rw.</a>
   <div class="nav-links">

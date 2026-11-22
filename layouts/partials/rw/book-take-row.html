@@ -1,0 +1,6 @@
+{{- /* context: dict "book" (shelf entry) "take" (from rw/book-takes.html, or nil). Cover, title, author and what Rob said; links to that post, else to the book */ -}}
+{{- $isbn := string .book.isbn }}
+<a class="book-row" href="{{ with .take }}{{ .post.RelPermalink }}{{ else }}{{ partial "rw/book-url.html" $isbn }}{{ end }}">
+  {{ with .book.cover_url }}<img class="cover" src="{{ . }}" alt="" width="64" height="96" loading="lazy">{{ end }}
+  <span><span class="book-title">{{ .book.title }}</span><span class="book-author">{{ .book.author }}</span>{{ with .take }}<span class="book-why">{{ .take }}</span>{{ end }}</span>
+</a>

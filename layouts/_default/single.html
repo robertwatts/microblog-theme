@@ -9,7 +9,7 @@
 {{- if eq .RelPermalink "/posts/" }}
   {{ partial "rw/band.html" (dict "page" . "title" .Title "filters" "") }}
   <main class="wrap stack">{{ .Content }}</main>
-{{- else if eq .RelPermalink "/reading/" }}
+{{- else if in .RawContent "rw-books" }}{{/* /reading/ and the page of the rest */}}
   {{- $split := partial "rw/lede.html" .Content }}
   {{ partial "rw/band.html" (dict "page" . "title" .Title "ledeHTML" $split.lede) }}
   <main class="wrap stack">{{ $split.body | safeHTML }}</main>

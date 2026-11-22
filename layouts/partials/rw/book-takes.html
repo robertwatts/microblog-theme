@@ -1,0 +1,22 @@
+{{- /* What Rob has said about each book. For every ISBN linked from a post (micro.blog/books/{isbn} or /books/{isbn}),
+       the newest post that says something beyond micro.blog's "Finished reading: Title by Author 📚" line.
+       Returns dict isbn → dict "post" "take" (plain text, trimmed) "date". A post with only that line has no take. */ -}}
+{{- $out := dict -}}
+{{- range (where site.RegularPages "Type" "post").ByDate.Reverse -}}
+  {{- $post := . -}}
+  {{- $isbns := findRE `books/[0-9Xx]{10,13}` .RawContent -}}
+  {{- if $isbns -}}
+    {{- $text := .Content | plainify | htmlUnescape | replaceRE `\s+` " " -}}
+    {{- $take := replaceRE `^[^📚]*📚` "" $text | strings.TrimLeft " .:-–—" | strings.TrimRight " " -}}
+    {{- with $take -}}
+      {{- $take = truncate 180 . -}}
+      {{- range $isbns -}}
+        {{- $isbn := strings.TrimPrefix "books/" . -}}
+        {{- if not (isset $out $isbn) -}}
+          {{- $out = merge $out (dict $isbn (dict "post" $post "take" $take "date" $post.Date)) -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}
